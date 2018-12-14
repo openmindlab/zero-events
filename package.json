@@ -2,6 +2,10 @@
   "name": "@openmind/zero-events",
   "version": "1.0.0",
   "description": "The Openmind Events management",
+  "repository": {
+    "type": "git",
+    "url": "https://stash.openmindonline.it/projects/OMZERO/repos/zero-events"
+  },
   "main": "build/zero-events.js",
   "author": "Openmind Lab",
   "license": "MIT",
