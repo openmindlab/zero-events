@@ -50,12 +50,12 @@ class Events {
   }
 
   on(name, callback, ...args) {
-    Events.on(this.__event_target__, name, callback, args);
+    Events.on(this.__event_target__, name, callback, ...args);
     return this;
   }
 
-  one(name, callback, args) {
-    Events.one(this.__event_target__, name, callback, args);
+  one(name, callback, ...args) {
+    Events.one(this.__event_target__, name, callback, ...args);
     return this;
   }
 
@@ -65,7 +65,7 @@ class Events {
   }
 
   trigger(name, ...args) {
-    Events.trigger(this.__event_target__, name, args);
+    Events.trigger(this.__event_target__, name, ...args);
     return this;
   }
 
@@ -121,7 +121,7 @@ class Events {
       return ret;
     };
 
-    Events.on(target, name, tmp, args);
+    Events.on(target, name, tmp, ...args);
   }
 
 
