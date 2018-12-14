@@ -1,6 +1,6 @@
 {
   "name": "@openmind/zero-events",
-  "version": "1.0.0-0",
+  "version": "1.0.0",
   "description": "The Openmind Events management",
   "main": "build/zero-events.js",
   "author": "Openmind Lab",
