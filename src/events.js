@@ -34,9 +34,26 @@ const extractHandlers = (collection, eventnames) => {
 
 };
 
-
 const checkFn = (fn, callback) => {
-  return (fn === callback) || (fn.__Ref__ === callback) || (fn === callback.__Ref__) || (fn.__Ref__ === callback.__Ref__);
+
+  let chkFn = callback;
+
+  while( fn ) {
+    callback = chkFn;
+
+    while( callback ) {
+
+      if ( callback === fn ) {
+        return true;
+      }
+
+      callback = callback.__Ref__
+    }
+
+    fn = fn.__Ref__;
+  }
+
+  return false;
 }
 
 class Events {
@@ -115,13 +132,13 @@ class Events {
 
   static one(target, name, callback, ...args) {
 
-    const tmp = function() {
+    callback.__Ref__ = function() {
       const ret = callback.apply(target, arguments);
       Events.off( target, name, tmp);
       return ret;
     };
 
-    Events.on(target, name, tmp, ...args);
+    Events.on(target, name, callback.__Ref__, ...args);
   }
 
 
