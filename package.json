@@ -1,10 +1,10 @@
 {
   "name": "@openmind/zero-events",
   "version": "1.0.1",
-  "description": "The Openmind Events management",
+  "description": "The openmind events management",
   "repository": {
     "type": "git",
-    "url": "https://stash.openmindonline.it/projects/OMZERO/repos/zero-events"
+    "url": "https://github.com/openmindlab/zero-events"
   },
   "main": "build/zero-events.js",
   "author": "openmind Lab",
@@ -14,12 +14,28 @@
     "babel-loader": "7.1.5",
     "babel-preset-env": "1.7.0",
     "babel-register": "6.26.0",
-    "webpack-stream": "5.2.1",
+    "eslint": "^5.14.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-compat": "^2.7.0",
+    "eslint-plugin-import": "^2.16.0",
+    "semver": "5.5.0",
     "webpack": "4.27.1",
     "webpack-cli": "3.1.2",
-    "webpack-merge": "4.1.5",
     "webpack-dev-server": "3.1.11",
-    "semver": "5.5.0"
+    "webpack-merge": "4.1.5",
+    "webpack-stream": "5.2.1"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "env": {
+      "browser": true
+    },
+    "plugins": [
+      "compat"
+    ],
+    "rules": {
+      "compat/compat": "error"
+    }
   },
   "scripts": {
     "dev": "webpack-dev-server --config webpack-config.js",

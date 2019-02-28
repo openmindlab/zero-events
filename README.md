@@ -1,6 +1,12 @@
 # Events
 Simple events management for all object/HTML elements
 
+##Code style
+
+This project uses the AirBnb code style
+
+Refer to https://github.com/airbnb/javascript
+
 ##### Usage
 Events exposes static methods
 ```js

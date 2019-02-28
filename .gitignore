@@ -1,15 +1,8 @@
 .DS_Store
 node_modules/
-yarn.lock
 package-lock.json
 yarn-error.log
 .vscode/
+.idea/
 
-build/*.*
 !build/zero-events.js
-
-src/libs.js
-src/main.js
-
-src/components/first.js
-src/components/second.js
