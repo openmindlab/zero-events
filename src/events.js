@@ -1,3 +1,7 @@
+/**
+ * Disallow use of Object.prototypes builtins directly
+ * @see https://eslint.org/docs/rules/no-prototype-builtins
+ */
 const has = Object.prototype.hasOwnProperty;
 
 const extractHandlers = (collection, eventnames) => {
@@ -50,70 +54,108 @@ const checkFn = (fn, callback) => {
   return false;
 };
 
+/**
+ * Create an event-bus for the application
+ *
+ */
 class Events {
+  /**
+   * Per recuperare la versione di build corrente
+   * Proviamo ad estenarlizzare
+   * @return {string}
+   * @constructor
+   */
   static get VERSION() {
     return process.env.VERSION;
   }
 
-  constructor(wrapper) {
-    this.__event_target__ = wrapper;
-  }
-
-  on(name, callback, ...args) {
-    Events.on(this.__event_target__, name, callback, ...args);
-    return this;
-  }
-
-  one(name, callback, ...args) {
-    Events.one(this.__event_target__, name, callback, ...args);
-    return this;
-  }
-
-  off(name, callback) {
-    Events.off(this.__event_target__, name, callback);
-    return this;
-  }
-
-  trigger(name, ...args) {
-    Events.trigger(this.__event_target__, name, ...args);
-    return this;
-  }
-
+  /**
+   * Da verificare se possiamo cambiare il nome
+   * @return {{handlers: Array, subevents: {}}}
+   * @constructor
+   */
   static get DefaultObject() {
     return { handlers: [], subevents: {} };
   }
 
   /**
-     *
-     * @param target
-     * @param name
-     * @param callback
-     * @param args
-     */
+  * Set the event handler for a given HtmlElement
+  * @param {HTMLElement} wrapper
+  */
+  constructor(wrapper) {
+    this.eventTarget = wrapper;
+  }
+
+  /**
+   * Bind an event for a given HtmlElement selector
+   * @param {string} name the event name
+   * @param {function} callback
+   * @param {*} args
+   * @return {Events}
+   */
+  on(name, callback, ...args) {
+    Events.on(this.eventTarget, name, callback, ...args);
+    return this;
+  }
+
+  /**
+   * Bind an event for a given selector and removes it
+   * after the first event callback execution
+   * @param {string} name the event name
+   * @param {function} callback
+   * @param {*} args
+   * @return {Events}
+   */
+  one(name, callback, ...args) {
+    Events.one(this.eventTarget, name, callback, ...args);
+    return this;
+  }
+
+  /**
+   * Remove the event binded for a specific HtmlElement
+   * @param {string} name
+   * @param {function} callback
+   * @return {Events}
+   */
+  off(name, callback) {
+    Events.off(this.eventTarget, name, callback);
+    return this;
+  }
+
+  /**
+   * Trigger specific event
+   * @param {string} name
+   * @param {*} args
+   * @return {Events}
+   */
+  trigger(name, ...args) {
+    Events.trigger(this.eventTarget, name, ...args);
+    return this;
+  }
+
   static on(target, name, callback, ...args) {
-    let __Events__ = target.__Events__ = target.__Events__ || Events.DefaultObject;
+    let bindedEvents = target.bindedEvents || Events.DefaultObject;
 
     const evt = name.split(' ');
-    for (let e of evt) {
-      e = e.trim();
-      const es = e.split('.');
+    for (const e of evt) {
+      const es = e.trim().split('.');
       let index = 0;
       while (index < es.length - 1) {
         const key = es[index++];
         if (!key) {
           throw `invalid event name ${e}`;
         }
-        __Events__.subevents[key] = __Events__.subevents[key] || Events.DefaultObject;
-        __Events__ = __Events__.subevents[key];
+        bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.DefaultObject;
+        bindedEvents = bindedEvents.subevents[key];
       }
 
 
-      let event_object = __Events__.subevents[es[index]];
-      if (!event_object) {
-        event_object = __Events__.subevents[es[index]] = Events.DefaultObject;
+      let eventObject = bindedEvents.subevents[es[index]];
+      if (!eventObject) {
+        eventObject = bindedEvents.subevents[es[index]] = Events.DefaultObject;
       }
 
-      const { handlers } = event_object;
+      const { handlers } = eventObject;
 
       callback.__Ref__ = function () {
         const _arg = Array.prototype.slice.call(arguments, 0);
@@ -127,7 +169,6 @@ class Events {
     }
   }
 
-
   static one(target, name, callback, ...args) {
     callback.__Ref__ = function () {
       const ret = callback.apply(target, arguments);
@@ -138,24 +179,23 @@ class Events {
     Events.on(target, name, callback.__Ref__, ...args);
   }
 
-
   static off(target, name, callback) {
-    target.__Events__ = target.__Events__ || Events.DefaultObject;
+    target.bindedEvents = target.bindedEvents || Events.DefaultObject;
 
     name = name || '.';
 
-    let events_to_remove = [];
+    let eventsToRemove = [];
 
     if (target.removeEventListener) {
       const names_split = name.split('.');
       if (names_split[0] === '') {
-        events_to_remove = Object.keys(target.__Events__.subevents);
+        eventsToRemove = Object.keys(target.bindedEvents.subevents);
       } else {
-        events_to_remove = [names_split[0]];
+        eventsToRemove = [names_split[0]];
       }
     }
 
-    const handlers = extractHandlers(target.__Events__, name);
+    const handlers = extractHandlers(target.bindedEvents, name);
 
     for (let i = handlers.length - 1; i >= 0; i--) {
       const pos = handlers[i];
@@ -164,13 +204,13 @@ class Events {
         if (callback) {
           if (checkFn(fn, callback)) {
             pos.splice(j, 1);
-            for (const k of events_to_remove) {
+            for (const k of eventsToRemove) {
               target.removeEventListener(k, fn.__Ref__ || fn, false);
             }
           }
         } else {
           pos.splice(j, 1);
-          for (const k of events_to_remove) {
+          for (const k of eventsToRemove) {
             target.removeEventListener(k, fn.__Ref__ || fn, false);
           }
         }
@@ -179,10 +219,10 @@ class Events {
   }
 
   static trigger(target, name, ...args) {
-    target.__Events__ = target.__Events__ || Events.DefaultObject;
+    target.bindedEvents = target.bindedEvents || Events.DefaultObject;
 
     const eventnames = name.split('.');
-    const handlers = extractHandlers(target.__Events__, name);
+    const handlers = extractHandlers(target.bindedEvents, name);
 
     for (const hs of handlers) {
       for (const fn of hs) {
