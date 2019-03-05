@@ -187,30 +187,26 @@ Events.off(target, '.namespace');
    */
   static on(target, name, callback, ...args) {
     let bindedEvents = target.bindedEvents = target.bindedEvents || Events.defaults;
-
-    const evt = name.split(' ');
-    for (let e of evt) {
+    name.split(' ').forEach((e) => {
       e = e.trim();
       const es = e.split('.');
       let index = 0;
       while (index < es.length - 1) {
-        const key = es[index++];
+        const key = es[index += 1];
         if (!key) {
           throw new Error(`invalid event name ${e}`);
         }
         bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.defaults;
         bindedEvents = bindedEvents.subevents[key];
       }
-
-
-      let event_object = bindedEvents.subevents[es[index]];
-      if (!event_object) {
-        event_object = bindedEvents.subevents[es[index]] = Events.defaults;
+      let eventObject = bindedEvents.subevents[es[index]];
+      if (!eventObject) {
+        eventObject = bindedEvents.subevents[es[index]] = Events.defaults;
       }
 
       const {
         handlers,
-      } = event_object;
+      } = eventObject;
 
       callback.__Ref__ = function () {
         const _arg = Array.prototype.slice.call(arguments, 0);
@@ -221,7 +217,7 @@ Events.off(target, '.namespace');
       if (target.addEventListener) {
         target.addEventListener(es[0], callback.__Ref__, false);
       }
-    }
+    });
   }
 
 
