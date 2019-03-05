@@ -35,6 +35,7 @@ It could be used as static class or initialized
             * [new Events.VERSION()](#new_Events.VERSION_new)
         * [.defaults](#Events.defaults)
             * [new Events.defaults()](#new_Events.defaults_new)
+        * [.on(target, name, callback, ...args)](#Events.on)
 
 <a name="new_Events_new"></a>
 
@@ -58,14 +59,14 @@ eventManager.on('event', callback());
 <a name="Events+on"></a>
 
 ### events.on(name, callback, ...args) ⇒ [<code>Events</code>](#Events)
-Bind an event for a given HtmlElement selector
+Bind an event for a given HtmlElement selector <br/>
 It could be used with a single named event or with a concatenation of namespaces
 
 **Kind**: instance method of [<code>Events</code>](#Events)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> | the event name |
+| name | <code>string</code> | the event name (could be a string or a dot separated namespace) |
 | callback | <code>function</code> |  |
 | ...args | <code>\*</code> |  |
 
@@ -86,22 +87,23 @@ after the first event callback execution
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> | the event name |
+| name | <code>string</code> | the event name (could be a string or a dot separated namespace) |
 | callback | <code>function</code> |  |
 | ...args | <code>\*</code> |  |
 
 <a name="Events+off"></a>
 
 ### events.off(name, callback) ⇒ [<code>Events</code>](#Events)
-Remove the event binded for a specific HtmlElement
+Remove the event binded
+   for a specific HtmlElement < br / >
 It could remove a single named event or a portion namespaced event
 
 **Kind**: instance method of [<code>Events</code>](#Events)  
 
-| Param | Type |
-| --- | --- |
-| name | <code>string</code> | 
-| callback | <code>function</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | the event name (could be a string or a dot separated namespace) |
+| callback | <code>function</code> |  |
 
 **Example**  
 ```js
@@ -113,14 +115,14 @@ Events.off(target, '.namespace');
 <a name="Events+trigger"></a>
 
 ### events.trigger(name, ...args) ⇒ [<code>Events</code>](#Events)
-Trigger specific event
+Fire specific event
 
 **Kind**: instance method of [<code>Events</code>](#Events)  
 
-| Param | Type |
-| --- | --- |
-| name | <code>string</code> | 
-| ...args | <code>\*</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | the event name(could be a string or a dot separated namespace) |
+| ...args | <code>\*</code> |  |
 
 <a name="Events.VERSION"></a>
 
@@ -136,10 +138,29 @@ Proviamo ad estenarlizzare
 
 ### Events.defaults
 **Kind**: static class of [<code>Events</code>](#Events)  
+**Read only**: true  
 <a name="new_Events.defaults_new"></a>
 
 #### new Events.defaults()
 Default settings for event handler
+
+<a name="Events.on"></a>
+
+### Events.on(target, name, callback, ...args)
+Static method to bind a given event
+
+**Kind**: static method of [<code>Events</code>](#Events)  
+**Throws**:
+
+- <code>Error</code> Error
+
+
+| Param | Type |
+| --- | --- |
+| target | <code>HTMLElement</code> | 
+| name | <code>string</code> | 
+| callback | <code>function</code> | 
+| ...args | <code>\*</code> | 
 
 <a name="has"></a>
 

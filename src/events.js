@@ -18,7 +18,7 @@ const has = Object.prototype.hasOwnProperty;
 const extractHandlers = (collection, eventnames) => {
   const getHandlersFromNamespace = (coll) => {
     let ret1 = [coll.handlers];
-    coll.subevents.forEach((section) => {
+    Object.keys(coll.subevents).forEach((section) => {
       if (has.call(coll.subevents, section)) {
         ret1 = ret1.concat(getHandlersFromNamespace(coll.subevents[section]));
       }
@@ -26,13 +26,14 @@ const extractHandlers = (collection, eventnames) => {
     return ret1;
   };
   let ret = [];
-  const eventname = eventnames.split('.').shift();
+  eventnames = eventnames.split('.');
+  const eventname = eventnames.shift();
   if (eventname === '') {
-    collection.subevent.forEach((section) => {
-      if (has.call(collection.subevents, section)) {
+    for (const section in collection.subevents) {
+      if (collection.subevents.hasOwnProperty(section)) {
         ret = ret.concat(extractHandlers(collection.subevents[section], eventnames.join('.')));
       }
-    });
+    }
   } else {
     const section = eventname;
     if (has.call(collection.subevents, section)) {
@@ -49,16 +50,21 @@ const extractHandlers = (collection, eventnames) => {
  */
 const checkFn = (fn, callback) => {
   const chkFn = callback;
+
   while (fn) {
     callback = chkFn;
+
     while (callback) {
       if (callback === fn) {
         return true;
       }
-      callback.uuid = uuid();
+
+      callback = callback.__Ref__;
     }
+
     fn = fn.__Ref__;
   }
+
   return false;
 };
 
@@ -87,6 +93,7 @@ class Events {
 
   /**
    * Default settings for event handler
+   * @readonly
    * @return {{handlers: Array, subevents: {}}}
    * @constructor
    */
@@ -117,7 +124,7 @@ Events.on(target, 'eventname', function callback() {});
 Events.on(target, 'eventname.namespace', function callback() {});
 Events.on(target, 'eventname.namespace.subspace', function callback() {});
 Events.on(target, 'eventname.namespace otherevent.namespace', function callback() {});
-   * @param {string} name the event name
+   * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
    * @param {*} args
    * @return {Events}
@@ -130,7 +137,7 @@ Events.on(target, 'eventname.namespace otherevent.namespace', function callback(
   /**
    * Bind an event for a given selector and removes it
    * after the first event callback execution
-   * @param {string} name the event name
+   * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
    * @param {*} args
    * @return {Events}
@@ -149,7 +156,7 @@ Events.off(target, 'eventname');
 Events.off(target, 'eventname', callback);
 Events.off(target, 'eventname.namespace');
 Events.off(target, '.namespace');
-   * @param {string} name
+   * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
    * @return {Events}
    */
@@ -159,8 +166,11 @@ Events.off(target, '.namespace');
   }
 
   /**
-   * Trigger specific event
-   * @param {string} name
+   * Fire specific event
+   * @param {
+     string
+   }
+   name the event name(could be a string or a dot separated namespace)
    * @param {*} args
    * @return {Events}
    */
@@ -169,8 +179,22 @@ Events.off(target, '.namespace');
     return this;
   }
 
+  /**
+   * Static method to bind a given event
+   * @static
+   * @throws {Error} Error
+   * @param {HTMLElement} target
+   * @param {string} name
+   * @param {function} callback
+   * @param {*} args
+   * @memberof Events
+   */
   static on(target, name, callback, ...args) {
-    let bindedEvents = target.bindedEvents || Events.defaults;
+    target.bindedEvents = target.bindedEvents || Events.defaults;
+
+    let {
+      bindedEvents,
+    } = target;
     const evt = name.split(' ');
     evt.forEach((e) => {
       const es = e.trim().split('.');
@@ -178,7 +202,7 @@ Events.off(target, '.namespace');
       while (index < es.length - 1) {
         const key = es[index += 1];
         if (!key) {
-          throw `invalid event name ${e}`;
+          throw new Error(`invalid event name ${e}`);
         }
         bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.defaults;
         bindedEvents = bindedEvents.subevents[key];
@@ -205,13 +229,14 @@ Events.off(target, '.namespace');
   static one(target, name, callback, ...args) {
     callback.__Ref__ = function () {
       const ret = callback.apply(target, arguments);
-      Events.off(target, name, tmp);
+      Events.off(target, name, ...args);
       return ret;
     };
     Events.on(target, name, callback.__Ref__, ...args);
   }
 
-  static off(target = Events.defaults, name = '.', callback) {
+  static off(target, name = '.', callback) {
+    target.bindedEvents = target.bindedEvents || Events.defaults;
     let eventsToRemove = [];
     const nameSplit = name.split('.');
     if (nameSplit[0] === '') {
@@ -241,7 +266,9 @@ Events.off(target, '.namespace');
     }
   }
 
-  static trigger(target = Events.defaults, name, ...args) {
+  static trigger(target, name, ...args) {
+    target.bindedEvents = target.bindedEvents || Events.defaults;
+
     const eventnames = name.split('.');
     const handlers = extractHandlers(target.bindedEvents, name);
     handlers.forEach((handler) => {

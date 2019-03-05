@@ -1,0 +1,13 @@
+{
+    "verbose": false,
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+        "**/*.{js}",
+        "!**/node_modules/**",
+        "!**/build/**",
+        "!**/sample/**",
+        "!**/jest-coverage-report/**",
+        "!webpack.*.js"
+    ],
+    "coverageDirectory": "./jest-coverage-report"
+}

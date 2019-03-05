@@ -5,7 +5,7 @@ const Package = require('./package.json');
 
 
 const ENTRIES = {
-  manifest: './src/manifest.js',
+  manifest: './sample/manifest.js',
 };
 
 module.exports = {
@@ -18,18 +18,16 @@ module.exports = {
   entry: ENTRIES,
 
   module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['env'],
-          },
+    rules: [{
+      test: /\.js$/,
+      exclude: /(node_modules)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env'],
         },
       },
-    ],
+    }],
   },
 
   plugins: [
@@ -52,12 +50,10 @@ module.exports = {
     compress: false,
     port: 3000,
     hot: false,
+    disableHostCheck: true,
     before(App) {
-      App.set('view engine', 'pug');
-      App.set('views', './src');
-
       App.get('/', (req, res) => {
-        res.sendFile(`${__dirname}/src/index.html`);
+        res.sendFile(`${__dirname}/sample/index.html`);
       });
     },
   },
