@@ -28,8 +28,8 @@ const extractHandlers = (collection, eventnames) => {
 
   let ret = [];
 
-  // eventnames = eventnames.split('.');
-  const eventname = eventnames.split('.').shift();
+  eventnames = eventnames.split('.');
+  const eventname = eventnames.shift();
   if (eventname === '') {
     for (const section in collection.subevents) {
       if (collection.subevents.hasOwnProperty(section)) {
@@ -90,9 +90,9 @@ class Events {
    * @return {string}
    * @constructor
    */
-  static get VERSION() {
+  /* static get VERSION() {
     return process.env.VERSION;
-  }
+  } */
 
   /**
    * Default settings for event handler
@@ -193,7 +193,7 @@ Events.off(target, '.namespace');
    * @memberof Events
    */
   static on(target, name, callback, ...args) {
-    let bindedEvents = target.bindedEvents = target.bindedEvents || Events.DefaultObject;
+    let bindedEvents = target.bindedEvents = target.bindedEvents || Events.defaults;
 
     const evt = name.split(' ');
     for (let e of evt) {
@@ -203,16 +203,16 @@ Events.off(target, '.namespace');
       while (index < es.length - 1) {
         const key = es[index++];
         if (!key) {
-          throw `invalid event name ${e}`;
+          throw new Error(`invalid event name ${e}`);
         }
-        bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.DefaultObject;
+        bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.defaults;
         bindedEvents = bindedEvents.subevents[key];
       }
 
 
       let event_object = bindedEvents.subevents[es[index]];
       if (!event_object) {
-        event_object = bindedEvents.subevents[es[index]] = Events.DefaultObject;
+        event_object = bindedEvents.subevents[es[index]] = Events.defaults;
       }
 
       const {
@@ -235,7 +235,7 @@ Events.off(target, '.namespace');
   static one(target, name, callback, ...args) {
     callback.__Ref__ = function () {
       const ret = callback.apply(target, arguments);
-      Events.off(target, name, tmp);
+      Events.off(target, name, callback.__Ref__);
       return ret;
     };
 
@@ -244,7 +244,7 @@ Events.off(target, '.namespace');
 
 
   static off(target, name, callback) {
-    target.bindedEvents = target.bindedEvents || Events.DefaultObject;
+    target.bindedEvents = target.bindedEvents || Events.defaults;
 
     name = name || '.';
 
@@ -283,19 +283,19 @@ Events.off(target, '.namespace');
   }
 
   static trigger(target, name, ...args) {
-    target.bindedEvents = target.bindedEvents || Events.DefaultObject;
+    target.bindedEvents = target.bindedEvents || Events.defaults;
 
     const eventnames = name.split('.');
     const handlers = extractHandlers(target.bindedEvents, name);
 
+    if (target[eventnames[0]]) {
+      return target[eventnames[0]]();
+    }
     handlers.forEach((handler) => {
       handler.forEach((method) => {
         method.apply(target, args);
       });
     });
-    if (target[eventnames[0]]) {
-      target[eventnames[0]]();
-    }
   }
 }
 
