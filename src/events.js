@@ -64,10 +64,14 @@ const checkFn = (fn, callback) => {
 
 /**
  * Create an event-bus for the application
+ * It could be used as static class or initialized
  * @example
- ```js
 import Events from '@openmind/om-events';
-```
+Events.on('event', callback());
+
+const targetElement = document.createElement('div');
+cont eventManager = new Events(targetElement);
+eventManager.on('event', callback());
  *
  */
 class Events {
@@ -105,10 +109,10 @@ class Events {
    * Bind an event for a given HtmlElement selector
    * It could be used with a single named event or with a concatenation of namespaces
    * @example
-   Events.on(target, 'eventname', function callback() {});
-   Events.on(target, 'eventname.namespace', function callback() {});
-   Events.on(target, 'eventname.namespace.subspace', function callback() {});
-   Events.on(target, 'eventname.namespace otherevent.namespace', function callback() {});
+Events.on(target, 'eventname', function callback() {});
+Events.on(target, 'eventname.namespace', function callback() {});
+Events.on(target, 'eventname.namespace.subspace', function callback() {});
+Events.on(target, 'eventname.namespace otherevent.namespace', function callback() {});
    * @param {string} name the event name
    * @param {function} callback
    * @param {*} args
@@ -136,10 +140,10 @@ class Events {
    * Remove the event binded for a specific HtmlElement
    * It could remove a single named event or a portion namespaced event
    * @example
-   Events.off(target, 'eventname');
-   Events.off(target, 'eventname', callback);
-   Events.off(target, 'eventname.namespace');
-   Events.off(target, '.namespace');
+Events.off(target, 'eventname');
+Events.off(target, 'eventname', callback);
+Events.off(target, 'eventname.namespace');
+Events.off(target, '.namespace');
    * @param {string} name
    * @param {function} callback
    * @return {Events}
