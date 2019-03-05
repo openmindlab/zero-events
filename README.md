@@ -2,7 +2,7 @@
 
 <dl>
 <dt><a href="#Events">Events</a></dt>
-<dd><p>Create an event-bus for the application
+<dd><p>Create an event-bus for the application <br/>
 It could be used as static class or initialized</p>
 </dd>
 </dl>
@@ -18,7 +18,7 @@ It could be used as static class or initialized</p>
 <a name="Events"></a>
 
 ## Events
-Create an event-bus for the application
+Create an event-bus for the application <br/>
 It could be used as static class or initialized
 
 **Kind**: global class  
@@ -33,8 +33,8 @@ It could be used as static class or initialized
     * _static_
         * [.VERSION](#Events.VERSION)
             * [new Events.VERSION()](#new_Events.VERSION_new)
-        * [.DefaultObject](#Events.DefaultObject)
-            * [new Events.DefaultObject()](#new_Events.DefaultObject_new)
+        * [.defaults](#Events.defaults)
+            * [new Events.defaults()](#new_Events.defaults_new)
 
 <a name="new_Events_new"></a>
 
@@ -46,6 +46,15 @@ Set the event handler for a given HtmlElement
 | --- | --- |
 | wrapper | <code>HTMLElement</code> | 
 
+**Example**  
+```js
+import Events from '@openmind/om-events';
+Events.on('event', callback());
+
+const targetElement = document.createElement('div');
+cont eventManager = new Events(targetElement);
+eventManager.on('event', callback());
+```
 <a name="Events+on"></a>
 
 ### events.on(name, callback, ...args) ⇒ [<code>Events</code>](#Events)
@@ -123,14 +132,14 @@ Trigger specific event
 Per recuperare la versione di build corrente
 Proviamo ad estenarlizzare
 
-<a name="Events.DefaultObject"></a>
+<a name="Events.defaults"></a>
 
-### Events.DefaultObject
+### Events.defaults
 **Kind**: static class of [<code>Events</code>](#Events)  
-<a name="new_Events.DefaultObject_new"></a>
+<a name="new_Events.defaults_new"></a>
 
-#### new Events.DefaultObject()
-Da verificare se possiamo cambiare il nome
+#### new Events.defaults()
+Default settings for event handler
 
 <a name="has"></a>
 

@@ -63,7 +63,7 @@ const checkFn = (fn, callback) => {
 };
 
 /**
- * Create an event-bus for the application
+ * Create an event-bus for the application <br/>
  * It could be used as static class or initialized
  * @example
 import Events from '@openmind/om-events';
@@ -86,15 +86,19 @@ class Events {
   }
 
   /**
-   * Da verificare se possiamo cambiare il nome
+   * Default settings for event handler
    * @return {{handlers: Array, subevents: {}}}
    * @constructor
    */
-  static get DefaultObject() {
+  static get defaults() {
     return {
       handlers: [],
       subevents: {},
     };
+  }
+
+  static get DefaultObject() {
+    return Events.defaults;
   }
 
   /**
@@ -165,7 +169,7 @@ Events.off(target, '.namespace');
   }
 
   static on(target, name, callback, ...args) {
-    let bindedEvents = target.bindedEvents || Events.DefaultObject;
+    let bindedEvents = target.bindedEvents || Events.defaults;
     const evt = name.split(' ');
     evt.forEach((e) => {
       const es = e.trim().split('.');
@@ -175,13 +179,13 @@ Events.off(target, '.namespace');
         if (!key) {
           throw `invalid event name ${e}`;
         }
-        bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.DefaultObject;
+        bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.defaults;
         bindedEvents = bindedEvents.subevents[key];
       }
       let eventObject = bindedEvents.subevents[es[index]];
       if (!eventObject) {
-        eventObject = Events.DefaultObject;
-        bindedEvents.subevents[es[index]] = Events.DefaultObject;
+        eventObject = Events.defaults;
+        bindedEvents.subevents[es[index]] = Events.defaults;
       }
       const {
         handlers,
@@ -206,7 +210,7 @@ Events.off(target, '.namespace');
     Events.on(target, name, callback.__Ref__, ...args);
   }
 
-  static off(target = Events.DefaultObject, name = '.', callback) {
+  static off(target = Events.defaults, name = '.', callback) {
     let eventsToRemove = [];
     const nameSplit = name.split('.');
     if (nameSplit[0] === '') {
@@ -236,7 +240,7 @@ Events.off(target, '.namespace');
     }
   }
 
-  static trigger(target = Events.DefaultObject, name, ...args) {
+  static trigger(target = Events.defaults, name, ...args) {
     const eventnames = name.split('.');
     const handlers = extractHandlers(target.bindedEvents, name);
     handlers.forEach((handler) => {
