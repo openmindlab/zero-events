@@ -4,5 +4,5 @@ package-lock.json
 yarn-error.log
 .vscode/
 .idea/
-
+coverage
 !build/zero-events.js

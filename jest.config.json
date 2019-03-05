@@ -1,5 +1,6 @@
 {
-    "verbose": false,
+    "preset": "jest-puppeteer",
+    "verbose": true,
     "collectCoverage": true,
     "collectCoverageFrom": [
         "**/*.{js}",
@@ -8,6 +9,5 @@
         "!**/sample/**",
         "!**/jest-coverage-report/**",
         "!webpack.*.js"
-    ],
-    "coverageDirectory": "./jest-coverage-report"
+    ]
 }

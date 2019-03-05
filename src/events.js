@@ -18,16 +18,18 @@ const has = Object.prototype.hasOwnProperty;
 const extractHandlers = (collection, eventnames) => {
   const getHandlersFromNamespace = (coll) => {
     let ret1 = [coll.handlers];
-    Object.keys(coll.subevents).forEach((section) => {
+    for (const section in coll.subevents) {
       if (has.call(coll.subevents, section)) {
         ret1 = ret1.concat(getHandlersFromNamespace(coll.subevents[section]));
       }
-    });
+    }
     return ret1;
   };
+
   let ret = [];
-  eventnames = eventnames.split('.');
-  const eventname = eventnames.shift();
+
+  // eventnames = eventnames.split('.');
+  const eventname = eventnames.split('.').shift();
   if (eventname === '') {
     for (const section in collection.subevents) {
       if (collection.subevents.hasOwnProperty(section)) {
@@ -40,6 +42,7 @@ const extractHandlers = (collection, eventnames) => {
       ret = ret.concat(getHandlersFromNamespace(collection.subevents[section]));
     }
   }
+
   return ret;
 };
 /**
@@ -190,87 +193,101 @@ Events.off(target, '.namespace');
    * @memberof Events
    */
   static on(target, name, callback, ...args) {
-    target.bindedEvents = target.bindedEvents || Events.defaults;
+    let bindedEvents = target.bindedEvents = target.bindedEvents || Events.DefaultObject;
 
-    let {
-      bindedEvents,
-    } = target;
     const evt = name.split(' ');
-    evt.forEach((e) => {
-      const es = e.trim().split('.');
+    for (let e of evt) {
+      e = e.trim();
+      const es = e.split('.');
       let index = 0;
       while (index < es.length - 1) {
-        const key = es[index += 1];
+        const key = es[index++];
         if (!key) {
-          throw new Error(`invalid event name ${e}`);
+          throw `invalid event name ${e}`;
         }
-        bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.defaults;
+        bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.DefaultObject;
         bindedEvents = bindedEvents.subevents[key];
       }
-      let eventObject = bindedEvents.subevents[es[index]];
-      if (!eventObject) {
-        eventObject = Events.defaults;
-        bindedEvents.subevents[es[index]] = Events.defaults;
+
+
+      let event_object = bindedEvents.subevents[es[index]];
+      if (!event_object) {
+        event_object = bindedEvents.subevents[es[index]] = Events.DefaultObject;
       }
+
       const {
         handlers,
-      } = eventObject;
+      } = event_object;
+
       callback.__Ref__ = function () {
         const _arg = Array.prototype.slice.call(arguments, 0);
         return callback.apply(target, _arg.concat(args));
       };
       handlers.push(callback);
+
       if (target.addEventListener) {
         target.addEventListener(es[0], callback.__Ref__, false);
       }
-    });
+    }
   }
+
 
   static one(target, name, callback, ...args) {
     callback.__Ref__ = function () {
       const ret = callback.apply(target, arguments);
-      Events.off(target, name, ...args);
+      Events.off(target, name, tmp);
       return ret;
     };
+
     Events.on(target, name, callback.__Ref__, ...args);
   }
 
-  static off(target, name = '.', callback) {
-    target.bindedEvents = target.bindedEvents || Events.defaults;
+
+  static off(target, name, callback) {
+    target.bindedEvents = target.bindedEvents || Events.DefaultObject;
+
+    name = name || '.';
+
     let eventsToRemove = [];
-    const nameSplit = name.split('.');
-    if (nameSplit[0] === '') {
-      eventsToRemove = Object.keys(target.bindedEvents.subevents);
-    } else {
-      eventsToRemove = [nameSplit[0]];
+
+    if (target.removeEventListener) {
+      const nameSplit = name.split('.');
+      if (nameSplit[0] === '') {
+        eventsToRemove = Object.keys(target.bindedEvents.subevents);
+      } else {
+        eventsToRemove = [nameSplit[0]];
+      }
     }
+
     const handlers = extractHandlers(target.bindedEvents, name);
-    for (let i = handlers.length - 1; i >= 0; i -= 1) {
+
+    for (let i = handlers.length - 1; i >= 0; i--) {
       const pos = handlers[i];
       for (let j = pos.length - 1; j >= 0; j--) {
         const fn = pos[j];
         if (callback) {
           if (checkFn(fn, callback)) {
             pos.splice(j, 1);
-            eventsToRemove.forEach((removedEvent) => {
-              target.removeEventListener(removedEvent, fn.__Ref__ || fn, false);
-            });
+            for (const k of eventsToRemove) {
+              target.removeEventListener(k, fn.__Ref__ || fn, false);
+            }
           }
         } else {
           pos.splice(j, 1);
-          eventsToRemove.forEach((removedEvent) => {
-            target.removeEventListener(removedEvent, fn.__Ref__ || fn, false);
-          });
+          for (const k of eventsToRemove) {
+            target.removeEventListener(k, fn.__Ref__ || fn, false);
+          }
         }
       }
     }
   }
 
   static trigger(target, name, ...args) {
-    target.bindedEvents = target.bindedEvents || Events.defaults;
+    target.bindedEvents = target.bindedEvents || Events.DefaultObject;
 
     const eventnames = name.split('.');
     const handlers = extractHandlers(target.bindedEvents, name);
+
     handlers.forEach((handler) => {
       handler.forEach((method) => {
         method.apply(target, args);
