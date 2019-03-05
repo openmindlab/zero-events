@@ -1,7 +1,7 @@
 # Events
 Simple events management for all object/HTML elements
 
-##Code style
+###### Code style
 
 This project uses the AirBnb code style
 

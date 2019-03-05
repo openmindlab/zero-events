@@ -1,4 +1,4 @@
-import Events from './events';
+import Events from '../src/events';
 
 console.log( Events.VERSION );
 
