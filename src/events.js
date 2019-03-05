@@ -110,7 +110,7 @@ class Events {
   }
 
   /**
-   * Bind an event for a given HtmlElement selector
+   * Bind an event for a given HtmlElement selector <br/>
    * It could be used with a single named event or with a concatenation of namespaces
    * @example
 Events.on(target, 'eventname', function callback() {});
@@ -141,7 +141,8 @@ Events.on(target, 'eventname.namespace otherevent.namespace', function callback(
   }
 
   /**
-   * Remove the event binded for a specific HtmlElement
+   * Remove the event binded
+   for a specific HtmlElement < br / >
    * It could remove a single named event or a portion namespaced event
    * @example
 Events.off(target, 'eventname');
