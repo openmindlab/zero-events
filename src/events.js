@@ -134,7 +134,7 @@ class Events {
 
     callback.__Ref__ = function() {
       const ret = callback.apply(target, arguments);
-      Events.off( target, name, tmp);
+      Events.off( target, name, callback.__Ref__);
       return ret;
     };
 
