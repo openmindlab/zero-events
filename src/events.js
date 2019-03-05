@@ -1,7 +1,3 @@
-import {
-  v4 as uuid,
-} from 'uuid';
-
 /**
  * Disallow use of Object.prototypes builtins directly
  * @see https://eslint.org/docs/rules/no-prototype-builtins
@@ -18,11 +14,11 @@ const has = Object.prototype.hasOwnProperty;
 const extractHandlers = (collection, eventnames) => {
   const getHandlersFromNamespace = (coll) => {
     let ret1 = [coll.handlers];
-    for (const section in coll.subevents) {
+    Object.keys(coll.subevents).forEach((section) => {
       if (has.call(coll.subevents, section)) {
         ret1 = ret1.concat(getHandlersFromNamespace(coll.subevents[section]));
       }
-    }
+    });
     return ret1;
   };
 
@@ -31,11 +27,11 @@ const extractHandlers = (collection, eventnames) => {
   eventnames = eventnames.split('.');
   const eventname = eventnames.shift();
   if (eventname === '') {
-    for (const section in collection.subevents) {
-      if (collection.subevents.hasOwnProperty(section)) {
+    Object.keys(collection.subevents).forEach((section) => {
+      if (has.call(collection.subevents, section)) {
         ret = ret.concat(extractHandlers(collection.subevents[section], eventnames.join('.')));
       }
-    }
+    });
   } else {
     const section = eventname;
     if (has.call(collection.subevents, section)) {
@@ -170,10 +166,7 @@ Events.off(target, '.namespace');
 
   /**
    * Fire specific event
-   * @param {
-     string
-   }
-   name the event name(could be a string or a dot separated namespace)
+   * @param {string} name the event name(could be a string or a dot separated namespace)
    * @param {*} args
    * @return {Events}
    */
@@ -261,22 +254,22 @@ Events.off(target, '.namespace');
 
     const handlers = extractHandlers(target.bindedEvents, name);
 
-    for (let i = handlers.length - 1; i >= 0; i--) {
+    for (let i = handlers.length - 1; i >= 0; i -= 1) {
       const pos = handlers[i];
-      for (let j = pos.length - 1; j >= 0; j--) {
+      for (let j = pos.length - 1; j >= 0; j -= 1) {
         const fn = pos[j];
         if (callback) {
           if (checkFn(fn, callback)) {
             pos.splice(j, 1);
-            for (const k of eventsToRemove) {
-              target.removeEventListener(k, fn.__Ref__ || fn, false);
-            }
+            eventsToRemove.forEach((singleEvent) => {
+              target.removeEventListener(singleEvent, fn.__Ref__ || fn, false);
+            });
           }
         } else {
           pos.splice(j, 1);
-          for (const k of eventsToRemove) {
-            target.removeEventListener(k, fn.__Ref__ || fn, false);
-          }
+          eventsToRemove.forEach((singleEvent) => {
+            target.removeEventListener(singleEvent, fn.__Ref__ || fn, false);
+          });
         }
       }
     }
