@@ -31,8 +31,6 @@ It could be used as static class or initialized
         * [.off(name, callback)](#Events+off) ⇒ [<code>Events</code>](#Events)
         * [.trigger(name, ...args)](#Events+trigger) ⇒ [<code>Events</code>](#Events)
     * _static_
-        * [.VERSION](#Events.VERSION)
-            * [new Events.VERSION()](#new_Events.VERSION_new)
         * [.defaults](#Events.defaults)
             * [new Events.defaults()](#new_Events.defaults_new)
         * [.on(target, name, callback, ...args)](#Events.on)
@@ -123,16 +121,6 @@ Fire specific event
 | --- | --- | --- |
 | name | <code>string</code> | the event name(could be a string or a dot separated namespace) |
 | ...args | <code>\*</code> |  |
-
-<a name="Events.VERSION"></a>
-
-### Events.VERSION
-**Kind**: static class of [<code>Events</code>](#Events)  
-<a name="new_Events.VERSION_new"></a>
-
-#### new Events.VERSION()
-Per recuperare la versione di build corrente
-Proviamo ad estenarlizzare
 
 <a name="Events.defaults"></a>
 
