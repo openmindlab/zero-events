@@ -237,7 +237,7 @@ Events.off(target, '.namespace');
 
       const { handlers } = eventObject;
 
-      callback.__Ref__ = function () {
+      callback.__Ref__ = function superCallback() {
         const _arg = Array.prototype.slice.call(arguments, 0);
         return callback.apply(target, _arg.concat(args));
       };
@@ -251,7 +251,7 @@ Events.off(target, '.namespace');
 
 
   static one(target, name, callback, ...args) {
-    callback.__Ref__ = function () {
+    callback.__Ref__ = function superCallback() {
       const ret = callback.apply(target, arguments);
       Events.off(target, name, callback.__Ref__);
       return ret;
