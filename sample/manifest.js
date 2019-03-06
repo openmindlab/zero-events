@@ -13,15 +13,31 @@ function mockCallback() {
 }
 
 
-Events.on(btn1, 'click', mockCallback.bind(this));
-Events.on(btn1, 'click.pippo', mockCallback.bind(this));
+Events.one(btn1, 'click', mockCallback.bind(this));
+/* Events.on(btn1, 'click.pippo', mockCallback.bind(this));
 Events.on(btn1, 'click.pippo.pluto', mockCallback.bind(this));
 Events.on(btn1, 'click.paperino', mockCallback.bind(this));
 Events.trigger(btn1, 'click');
 
-Events.off(btn1, 'click');
+Events.off(btn1, 'click', mockCallback); */
 
 Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+
+Object.defineProperty(mockCallback, 'reference', {
+  value() {
+    console.log('ciao');
+  },
+  enumerable: true,
+});
+console.log(mockCallback);
+
 
 /* const eventsBtn1 = new Events(btn1);
 const eventsBtn2 = new Events(btn2);

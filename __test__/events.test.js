@@ -70,6 +70,18 @@ describe('Static utilization', () => {
     } = Events;
     expect(defaults).toEqual(DefaultObject);
   });
+  test('it can removed also a named function', () => {
+    const mockCallback = jest.fn(() => {});
+    Events.on(buttonListener, 'click.name1.name2', mockCallback);
+    Events.trigger(buttonListener, 'click');
+    Events.trigger(buttonListener, '.name1');
+    Events.trigger(buttonListener, '..name2');
+    Events.off(buttonListener, '..name2', mockCallback);
+    Events.trigger(buttonListener, 'click');
+    Events.trigger(buttonListener, '.name1');
+    Events.trigger(buttonListener, '..name2');
+    expect(mockCallback.mock.calls.length).toBe(3);
+  });
 });
 describe('Dynamic utilization', () => {
   test('execute a callback when event is bound', () => {

@@ -46,21 +46,21 @@ const extractHandlers = (collection, eventNames) => {
  * @param callback
  * @return {boolean}
  */
-const checkFn = (fn, callback) => {
+const checkFn = (method, callback) => {
   const chkFn = callback;
 
-  while (fn) {
+  while (method) {
     callback = chkFn;
 
     while (callback) {
-      if (callback === fn) {
+      if (callback === method) {
         return true;
       }
 
-      callback = callback.__Ref__;
+      callback = callback.reference;
     }
 
-    fn = fn.__Ref__;
+    method = method.reference;
   }
 
   return false;
@@ -237,27 +237,29 @@ Events.off(target, '.namespace');
 
       const { handlers } = eventObject;
 
-      callback.__Ref__ = function superCallback() {
-        const _arg = Array.prototype.slice.call(arguments, 0);
-        return callback.apply(target, _arg.concat(args));
-      };
-      handlers.push(callback);
+      Object.defineProperty(callback, 'reference', {
+        value() {
+          const arg = Array.prototype.slice.call(arguments, 0);
+          return callback.apply(target, arg.concat(args));
+        },
+      });
 
-      if (target.addEventListener) {
-        target.addEventListener(eventsList[0], callback.__Ref__, false);
-      }
+      handlers.push(callback);
+      target.addEventListener(eventsList[0], callback.reference, false);
     });
   }
 
 
   static one(target, name, callback, ...args) {
-    callback.__Ref__ = function superCallback() {
-      const ret = callback.apply(target, arguments);
-      Events.off(target, name, callback.__Ref__);
-      return ret;
-    };
+    Object.defineProperty(callback, 'reference', {
+      value() {
+        const arg = Array.prototype.slice.call(arguments, 0);
+        Events.off(target, name, callback.reference);
+        return callback.apply(target, arg.concat(args));
+      },
+    });
 
-    Events.on(target, name, callback.__Ref__, ...args);
+    Events.on(target, name, callback.reference, ...args);
   }
 
 
@@ -266,13 +268,11 @@ Events.off(target, '.namespace');
 
     let eventsToRemove = [];
 
-    if (definedTarget.removeEventListener) {
-      const nameSplit = name.split('.');
-      if (nameSplit[0] === '') {
-        eventsToRemove = Object.keys(definedTarget.bindedEvents.subevents);
-      } else {
-        eventsToRemove = [nameSplit[0]];
-      }
+    const nameSplit = name.split('.');
+    if (nameSplit[0] === '') {
+      eventsToRemove = Object.keys(definedTarget.bindedEvents.subevents);
+    } else {
+      eventsToRemove = [nameSplit[0]];
     }
 
     const handlers = extractHandlers(definedTarget.bindedEvents, name);
@@ -285,13 +285,13 @@ Events.off(target, '.namespace');
           if (checkFn(fn, callback)) {
             pos.splice(j, 1);
             eventsToRemove.forEach((singleEvent) => {
-              definedTarget.removeEventListener(singleEvent, fn.__Ref__ || fn, false);
+              definedTarget.removeEventListener(singleEvent, fn.reference || fn, false);
             });
           }
         } else {
           pos.splice(j, 1);
           eventsToRemove.forEach((singleEvent) => {
-            definedTarget.removeEventListener(singleEvent, fn.__Ref__ || fn, false);
+            definedTarget.removeEventListener(singleEvent, fn.reference || fn, false);
           });
         }
       }
@@ -312,6 +312,7 @@ Events.off(target, '.namespace');
         method.apply(definedTarget, args);
       });
     });
+    return true;
   }
 }
 
