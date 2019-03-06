@@ -11,7 +11,7 @@ const has = Object.prototype.hasOwnProperty;
  * @param eventnames
  * @return {Array}
  */
-const extractHandlers = (collection, eventnames) => {
+const extractHandlers = (collection, eventNames) => {
   const getHandlersFromNamespace = (coll) => {
     let ret1 = [coll.handlers];
     Object.keys(coll.subevents).forEach((section) => {
@@ -23,13 +23,12 @@ const extractHandlers = (collection, eventnames) => {
   };
 
   let ret = [];
-
-  eventnames = eventnames.split('.');
-  const eventname = eventnames.shift();
+  const eventNamesList = eventNames.split('.');
+  const eventname = eventNamesList.shift();
   if (eventname === '') {
     Object.keys(collection.subevents).forEach((section) => {
       if (has.call(collection.subevents, section)) {
-        ret = ret.concat(extractHandlers(collection.subevents[section], eventnames.join('.')));
+        ret = ret.concat(extractHandlers(collection.subevents[section], eventNamesList.join('.')));
       }
     });
   } else {
@@ -105,6 +104,25 @@ class Events {
 
   static get DefaultObject() {
     return Events.defaults;
+  }
+
+  static setupEventTarget(wrapper) {
+    if (!has.call(wrapper, 'bindedEvents')) {
+      Object.defineProperty(wrapper, 'bindedEvents', {
+        value: Events.defaults,
+        writable: true,
+        enumerable: true,
+      });
+    }
+    return wrapper;
+  }
+
+  static set eventTarget(wrapper) {
+    this.eventTarget = Events.setupEventTarget(wrapper);
+  }
+
+  static get eventTarget() {
+    return this.eventTarget;
   }
 
   /**
@@ -186,7 +204,8 @@ Events.off(target, '.namespace');
    * @memberof Events
    */
   static on(target, name, callback, ...args) {
-    let bindedEvents = target.bindedEvents = target.bindedEvents || Events.defaults;
+    const definedTarget = this.setupEventTarget(target);
+    let { bindedEvents } = definedTarget;
     name.split(' ').forEach((e) => {
       e = e.trim();
       const es = e.split('.');
