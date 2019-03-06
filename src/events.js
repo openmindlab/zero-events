@@ -106,6 +106,11 @@ class Events {
     return Events.defaults;
   }
 
+  /**
+   * Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
+   * and it adds if not present
+   * @param {HtmlElement} wrapper
+   */
   static setupEventTarget(wrapper) {
     if (!has.call(wrapper, 'bindedEvents')) {
       Object.defineProperty(wrapper, 'bindedEvents', {
@@ -117,12 +122,18 @@ class Events {
     return wrapper;
   }
 
-  static set eventTarget(wrapper) {
-    this.eventTarget = Events.setupEventTarget(wrapper);
+  /**
+   * @param {HtmlElement} wrapper
+   */
+  set eventTarget(wrapper) {
+    this.eventTargetElement = Events.setupEventTarget(wrapper);
   }
 
-  static get eventTarget() {
-    return this.eventTarget;
+  /**
+   * @returns {HtmlElement}
+   */
+  get eventTarget() {
+    return this.eventTargetElement;
   }
 
   /**
@@ -287,17 +298,17 @@ Events.off(target, '.namespace');
   }
 
   static trigger(target, name, ...args) {
-    target.bindedEvents = target.bindedEvents || Events.defaults;
+    const definedTarget = this.setupEventTarget(target);
 
     const eventnames = name.split('.');
-    const handlers = extractHandlers(target.bindedEvents, name);
+    const handlers = extractHandlers(definedTarget.bindedEvents, name);
 
-    if (target[eventnames[0]]) {
-      return target[eventnames[0]]();
+    if (definedTarget[eventnames[0]]) {
+      return definedTarget[eventnames[0]]();
     }
     handlers.forEach((handler) => {
       handler.forEach((method) => {
-        method.apply(target, args);
+        method.apply(definedTarget, args);
       });
     });
   }
