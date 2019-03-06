@@ -26,6 +26,8 @@ It could be used as static class or initialized
 * [Events](#Events)
     * [new Events(wrapper)](#new_Events_new)
     * _instance_
+        * [.eventTarget](#Events+eventTarget)
+        * [.eventTarget](#Events+eventTarget) ⇒ [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element)
         * [.on(name, callback, ...args)](#Events+on) ⇒ [<code>Events</code>](#Events)
         * [.one(name, callback, ...args)](#Events+one) ⇒ [<code>Events</code>](#Events)
         * [.off(name, callback)](#Events+off) ⇒ [<code>Events</code>](#Events)
@@ -33,6 +35,7 @@ It could be used as static class or initialized
     * _static_
         * [.defaults](#Events.defaults)
             * [new Events.defaults()](#new_Events.defaults_new)
+        * [.setupEventTarget(wrapper)](#Events.setupEventTarget)
         * [.on(target, name, callback, ...args)](#Events.on)
 
 <a name="new_Events_new"></a>
@@ -43,7 +46,7 @@ Set the event handler for a given HtmlElement
 
 | Param | Type |
 | --- | --- |
-| wrapper | <code>HTMLElement</code> | 
+| wrapper | [<code>HTMLElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | 
 
 **Example**  
 ```js
@@ -54,6 +57,19 @@ const targetElement = document.createElement('div');
 cont eventManager = new Events(targetElement);
 eventManager.on('event', callback());
 ```
+<a name="Events+eventTarget"></a>
+
+### events.eventTarget
+**Kind**: instance property of [<code>Events</code>](#Events)  
+
+| Param | Type |
+| --- | --- |
+| wrapper | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | 
+
+<a name="Events+eventTarget"></a>
+
+### events.eventTarget ⇒ [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element)
+**Kind**: instance property of [<code>Events</code>](#Events)  
 <a name="Events+on"></a>
 
 ### events.on(name, callback, ...args) ⇒ [<code>Events</code>](#Events)
@@ -64,8 +80,8 @@ It could be used with a single named event or with a concatenation of namespaces
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> | the event name (could be a string or a dot separated namespace) |
-| callback | <code>function</code> |  |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
 | ...args | <code>\*</code> |  |
 
 **Example**  
@@ -85,8 +101,8 @@ after the first event callback execution
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> | the event name (could be a string or a dot separated namespace) |
-| callback | <code>function</code> |  |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
 | ...args | <code>\*</code> |  |
 
 <a name="Events+off"></a>
@@ -100,8 +116,8 @@ It could remove a single named event or a portion namespaced event
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> | the event name (could be a string or a dot separated namespace) |
-| callback | <code>function</code> |  |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
 
 **Example**  
 ```js
@@ -119,7 +135,7 @@ Fire specific event
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> | the event name(could be a string or a dot separated namespace) |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name(could be a string or a dot separated namespace) |
 | ...args | <code>\*</code> |  |
 
 <a name="Events.defaults"></a>
@@ -132,6 +148,18 @@ Fire specific event
 #### new Events.defaults()
 Default settings for event handler
 
+<a name="Events.setupEventTarget"></a>
+
+### Events.setupEventTarget(wrapper)
+Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
+and it adds if not present
+
+**Kind**: static method of [<code>Events</code>](#Events)  
+
+| Param | Type |
+| --- | --- |
+| wrapper | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | 
+
 <a name="Events.on"></a>
 
 ### Events.on(target, name, callback, ...args)
@@ -140,14 +168,14 @@ Static method to bind a given event
 **Kind**: static method of [<code>Events</code>](#Events)  
 **Throws**:
 
-- <code>Error</code> Error
+- [<code>Error</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error) Error
 
 
 | Param | Type |
 | --- | --- |
-| target | <code>HTMLElement</code> | 
-| name | <code>string</code> | 
-| callback | <code>function</code> | 
+| target | [<code>HTMLElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | 
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) | 
 | ...args | <code>\*</code> | 
 
 <a name="has"></a>
