@@ -249,23 +249,21 @@ Events.off(target, '.namespace');
   }
 
 
-  static off(target, name, callback) {
-    target.bindedEvents = target.bindedEvents || Events.defaults;
-
-    name = name || '.';
+  static off(target, name = '.', callback) {
+    const definedTarget = this.setupEventTarget(target);
 
     let eventsToRemove = [];
 
-    if (target.removeEventListener) {
+    if (definedTarget.removeEventListener) {
       const nameSplit = name.split('.');
       if (nameSplit[0] === '') {
-        eventsToRemove = Object.keys(target.bindedEvents.subevents);
+        eventsToRemove = Object.keys(definedTarget.bindedEvents.subevents);
       } else {
         eventsToRemove = [nameSplit[0]];
       }
     }
 
-    const handlers = extractHandlers(target.bindedEvents, name);
+    const handlers = extractHandlers(definedTarget.bindedEvents, name);
 
     for (let i = handlers.length - 1; i >= 0; i -= 1) {
       const pos = handlers[i];
@@ -275,13 +273,13 @@ Events.off(target, '.namespace');
           if (checkFn(fn, callback)) {
             pos.splice(j, 1);
             eventsToRemove.forEach((singleEvent) => {
-              target.removeEventListener(singleEvent, fn.__Ref__ || fn, false);
+              definedTarget.removeEventListener(singleEvent, fn.__Ref__ || fn, false);
             });
           }
         } else {
           pos.splice(j, 1);
           eventsToRemove.forEach((singleEvent) => {
-            target.removeEventListener(singleEvent, fn.__Ref__ || fn, false);
+            definedTarget.removeEventListener(singleEvent, fn.__Ref__ || fn, false);
           });
         }
       }
