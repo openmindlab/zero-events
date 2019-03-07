@@ -7,8 +7,8 @@ const has = Object.prototype.hasOwnProperty;
  * Extract all the handlers for a specific namespace
  * Recoursive method
  * @private
- * @param collection
- * @param eventnames
+ * @param {Object} collection represents binded events for target
+ * @param {string} eventnames represents the event name or names spaces separated
  * @return {Array}
  */
 const extractHandlers = (collection, eventNames) => {
@@ -42,8 +42,8 @@ const extractHandlers = (collection, eventNames) => {
 };
 /**
  * @private
- * @param fn
- * @param callback
+ * @param {function} method
+ * @param {function} callback
  * @return {boolean}
  */
 const checkFn = (method, callback) => {
@@ -109,7 +109,7 @@ class Events {
   /**
    * Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
    * and it adds if not present
-   * @param {HtmlElement} wrapper
+   * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
    */
   static setupEventTarget(wrapper) {
     if (!has.call(wrapper, 'bindedEvents')) {
@@ -123,14 +123,14 @@ class Events {
   }
 
   /**
-   * @param {HtmlElement} wrapper
+   * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
    */
   set eventTarget(wrapper) {
     this.eventTargetElement = Events.setupEventTarget(wrapper);
   }
 
   /**
-   * @returns {HtmlElement}
+   * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
    */
   get eventTarget() {
     return this.eventTargetElement;
@@ -138,7 +138,7 @@ class Events {
 
   /**
    * Set the event handler for a given HtmlElement
-   * @param {HTMLElement} wrapper
+   * @param {HTMLElement} wrapper an HtmlElement used as target for binding events
    */
   constructor(wrapper) {
     this.eventTarget = wrapper;
@@ -154,7 +154,7 @@ Events.on(target, 'eventname.namespace.subspace', function callback() {});
 Events.on(target, 'eventname.namespace otherevent.namespace', function callback() {});
    * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
-   * @param {*} args
+   * @param {*} [args]
    * @return {Events}
    */
   on(name, callback, ...args) {
@@ -167,7 +167,7 @@ Events.on(target, 'eventname.namespace otherevent.namespace', function callback(
    * after the first event callback execution
    * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
-   * @param {*} args
+   * @param {*} [args]
    * @return {Events}
    */
   one(name, callback, ...args) {
@@ -196,7 +196,7 @@ Events.off(target, '.namespace');
   /**
    * Fire specific event
    * @param {string} name the event name(could be a string or a dot separated namespace)
-   * @param {*} args
+   * @param {*} [args]
    * @return {Events}
    */
   trigger(name, ...args) {
@@ -208,15 +208,17 @@ Events.off(target, '.namespace');
    * Static method to bind a given event
    * @static
    * @throws {Error} Error
-   * @param {HTMLElement} target
-   * @param {string} name
+   * @param {HtmlElement} target an HtmlElement used as target for binding events
+   * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
-   * @param {*} args
+   * @param {*} [args]
    * @memberof Events
    */
   static on(target, name, callback, ...args) {
     const definedTarget = this.setupEventTarget(target);
-    let { bindedEvents } = definedTarget;
+    let {
+      bindedEvents,
+    } = definedTarget;
     name.split(' ').forEach((event) => {
       const eventsList = event.trim().split('.');
       let index = 0;
@@ -235,7 +237,9 @@ Events.off(target, '.namespace');
         eventObject = bindedEvents.subevents[eventsList[index]];
       }
 
-      const { handlers } = eventObject;
+      const {
+        handlers,
+      } = eventObject;
 
       Object.defineProperty(callback, 'reference', {
         value() {
@@ -249,7 +253,17 @@ Events.off(target, '.namespace');
     });
   }
 
-
+  /**
+   * Bind only once the event and the callback to the target element
+   *
+   * @static
+   * @param {HtmlElement} target an HtmlElement used as target for binding events
+   * @param {string} name the event name (could be a string or a dot separated namespace)
+   * @param {function} callback
+   * @param {*} [args]
+   * @returns {void}
+   * @memberof Events
+   */
   static one(target, name, callback, ...args) {
     Object.defineProperty(callback, 'reference', {
       value() {
@@ -262,7 +276,15 @@ Events.off(target, '.namespace');
     Events.on(target, name, callback.reference, ...args);
   }
 
-
+  /**
+   *
+   *
+   * @static
+   * @param {HtmlElement} target an HtmlElement used as target for binding events
+   * @param {string} [name=.] the event name (could be a string or a dot separated namespace)
+   * @param {*} [callback]
+   * @memberof Events
+   */
   static off(target, name = '.', callback) {
     const definedTarget = this.setupEventTarget(target);
 
