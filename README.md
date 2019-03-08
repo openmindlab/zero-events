@@ -1,52 +1,57 @@
-### Table of Contents
+## Classes
 
--   [has][1]
--   [Events][2]
-    -   [Parameters][3]
-    -   [Examples][4]
-    -   [eventTarget][5]
-        -   [Parameters][6]
-    -   [eventTarget][7]
-        -   [Parameters][8]
-    -   [on][9]
-        -   [Parameters][10]
-        -   [Examples][11]
-    -   [one][12]
-        -   [Parameters][13]
-    -   [off][14]
-        -   [Parameters][15]
-        -   [Examples][16]
-    -   [trigger][17]
-        -   [Parameters][18]
-    -   [defaults][19]
-    -   [defaults][20]
-    -   [setupEventTarget][21]
-        -   [Parameters][22]
-    -   [on][23]
-        -   [Parameters][24]
-    -   [one][25]
-        -   [Parameters][26]
-    -   [off][27]
-        -   [Parameters][28]
+<dl>
+<dt><a href="#Events">Events</a></dt>
+<dd><p>Create an event-bus for the application <br/>
+It could be used as static class or initialized</p>
+</dd>
+</dl>
 
-## has
+## Constants
 
--   **See: [https://eslint.org/docs/rules/no-prototype-builtins][29]**
+<dl>
+<dt><a href="#has">has</a></dt>
+<dd><p>Disallow use of Object.prototypes builtins directly</p>
+</dd>
+</dl>
 
-Disallow use of Object.prototypes builtins directly
+<a name="Events"></a>
 
 ## Events
-
 Create an event-bus for the application <br/>
 It could be used as static class or initialized
 
-### Parameters
+**Kind**: global class  
 
--   `wrapper` **[HTMLElement][30]** an HtmlElement used as target for binding events
+* [Events](#Events)
+    * [new Events(wrapper)](#new_Events_new)
+    * _instance_
+        * [.eventTarget](#Events+eventTarget)
+        * [.eventTarget](#Events+eventTarget)
+        * [.on(name, callback, [...args])](#Events+on) ⇒ [<code>Events</code>](#Events)
+        * [.one(name, callback, [...args])](#Events+one) ⇒ [<code>Events</code>](#Events)
+        * [.off(name, callback)](#Events+off) ⇒ [<code>Events</code>](#Events)
+        * [.trigger(name, [...args])](#Events+trigger) ⇒ [<code>Events</code>](#Events)
+    * _static_
+        * [.defaults](#Events.defaults)
+            * [new Events.defaults()](#new_Events.defaults_new)
+        * [.setupEventTarget(wrapper)](#Events.setupEventTarget)
+        * [.on(target, name, callback, [...args])](#Events.on)
+        * [.one(target, name, callback, [...args])](#Events.one) ⇒ <code>void</code>
+        * [.off(target, [name], [callback])](#Events.off)
 
-### Examples
+<a name="new_Events_new"></a>
 
-```javascript
+### new Events(wrapper)
+Set the event handler for a given HtmlElement
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| wrapper | [<code>HTMLElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
+
+**Example**  
+```js
 import Events from '@openmind/om-events';
 Events.on('event', callback());
 
@@ -54,210 +59,161 @@ const targetElement = document.createElement('div');
 cont eventManager = new Events(targetElement);
 eventManager.on('event', callback());
 ```
+<a name="Events+eventTarget"></a>
 
-### eventTarget
+### events.eventTarget
+**Kind**: instance property of [<code>Events</code>](#Events)  
 
-#### Parameters
+| Param | Type | Description |
+| --- | --- | --- |
+| wrapper | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
 
--   `wrapper` **[HtmlElement][30]** an HtmlElement used as target for binding events
+<a name="Events+eventTarget"></a>
 
-### eventTarget
+### events.eventTarget
+**Kind**: instance property of [<code>Events</code>](#Events)  
 
-#### Parameters
+| Param | Type | Description |
+| --- | --- | --- |
+| wrapper | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
 
--   `wrapper` **[HtmlElement][30]** an HtmlElement used as target for binding events
+<a name="Events+on"></a>
 
-### on
-
+### events.on(name, callback, [...args]) ⇒ [<code>Events</code>](#Events)
 Bind an event for a given HtmlElement selector <br/>
 It could be used with a single named event or with a concatenation of namespaces
 
-#### Parameters
+**Kind**: instance method of [<code>Events</code>](#Events)  
 
--   `name` **[string][31]** the event name (could be a string or a dot separated namespace)
--   `callback` **[function][32]**
--   `args` **any?**
+| Param | Type | Description |
+| --- | --- | --- |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
+| [...args] | <code>\*</code> |  |
 
-#### Examples
-
-```javascript
+**Example**  
+```js
 Events.on(target, 'eventname', function callback() {});
 Events.on(target, 'eventname.namespace', function callback() {});
 Events.on(target, 'eventname.namespace.subspace', function callback() {});
 Events.on(target, 'eventname.namespace otherevent.namespace', function callback() {});
 ```
+<a name="Events+one"></a>
 
-Returns **[Events][33]**
-
-### one
-
+### events.one(name, callback, [...args]) ⇒ [<code>Events</code>](#Events)
 Bind an event for a given selector and removes it
 after the first event callback execution
 
-#### Parameters
+**Kind**: instance method of [<code>Events</code>](#Events)  
 
--   `name` **[string][31]** the event name (could be a string or a dot separated namespace)
--   `callback` **[function][32]**
--   `args` **any?**
+| Param | Type | Description |
+| --- | --- | --- |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
+| [...args] | <code>\*</code> |  |
 
-Returns **[Events][33]**
+<a name="Events+off"></a>
 
-### off
-
+### events.off(name, callback) ⇒ [<code>Events</code>](#Events)
 Remove the event binded
-for a specific HtmlElement &lt; br / >
+   for a specific HtmlElement < br / >
 It could remove a single named event or a portion namespaced event
 
-#### Parameters
+**Kind**: instance method of [<code>Events</code>](#Events)  
 
--   `name` **[string][31]** the event name (could be a string or a dot separated namespace)
--   `callback` **[function][32]**
+| Param | Type | Description |
+| --- | --- | --- |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
 
-#### Examples
-
-```javascript
+**Example**  
+```js
 Events.off(target, 'eventname');
 Events.off(target, 'eventname', callback);
 Events.off(target, 'eventname.namespace');
 Events.off(target, '.namespace');
 ```
+<a name="Events+trigger"></a>
 
-Returns **[Events][33]**
-
-### trigger
-
+### events.trigger(name, [...args]) ⇒ [<code>Events</code>](#Events)
 Fire specific event
 
-#### Parameters
+**Kind**: instance method of [<code>Events</code>](#Events)  
 
--   `name` **[string][31]** the event name(could be a string or a dot separated namespace)
--   `args` **any?**
+| Param | Type | Description |
+| --- | --- | --- |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name(could be a string or a dot separated namespace) |
+| [...args] | <code>\*</code> |  |
 
-Returns **[Events][33]**
+<a name="Events.defaults"></a>
 
-### defaults
+### Events.defaults
+**Kind**: static class of [<code>Events</code>](#Events)  
+**Read only**: true  
+<a name="new_Events.defaults_new"></a>
 
-Per recuperare la versione di build corrente
-Proviamo ad estenarlizzare
-
-Returns **[string][31]**
-
-### defaults
-
+#### new Events.defaults()
 Default settings for event handler
 
-Returns **{handlers: [Array][34], subevents: {}}**
+<a name="Events.setupEventTarget"></a>
 
-### setupEventTarget
-
+### Events.setupEventTarget(wrapper)
 Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
 and it adds if not present
 
-#### Parameters
+**Kind**: static method of [<code>Events</code>](#Events)  
 
--   `wrapper` **[HtmlElement][30]** an HtmlElement used as target for binding events
+| Param | Type | Description |
+| --- | --- | --- |
+| wrapper | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
 
-### on
+<a name="Events.on"></a>
 
+### Events.on(target, name, callback, [...args])
 Static method to bind a given event
 
-#### Parameters
+**Kind**: static method of [<code>Events</code>](#Events)  
+**Throws**:
 
--   `target` **[HtmlElement][30]** an HtmlElement used as target for binding events
--   `name` **[string][31]** the event name (could be a string or a dot separated namespace)
--   `callback` **[function][32]**
--   `args` **any?**
+- [<code>Error</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error) Error
 
 
--   Throws **[Error][35]** Error
+| Param | Type | Description |
+| --- | --- | --- |
+| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
+| [...args] | <code>\*</code> |  |
 
-### one
+<a name="Events.one"></a>
 
+### Events.one(target, name, callback, [...args]) ⇒ <code>void</code>
 Bind only once the event and the callback to the target element
 
-#### Parameters
+**Kind**: static method of [<code>Events</code>](#Events)  
 
--   `target` **[HtmlElement][30]** an HtmlElement used as target for binding events
--   `name` **[string][31]** the event name (could be a string or a dot separated namespace)
--   `callback` **[function][32]**
--   `args` **any?**
+| Param | Type | Description |
+| --- | --- | --- |
+| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
+| [...args] | <code>\*</code> |  |
 
-Returns **void**
+<a name="Events.off"></a>
 
-### off
+### Events.off(target, [name], [callback])
+**Kind**: static method of [<code>Events</code>](#Events)  
 
-#### Parameters
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) |  | an HtmlElement used as target for binding events |
+| [name] | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | <code>&quot;.&quot;</code> | the event name (could be a string or a dot separated namespace) |
+| [callback] | <code>\*</code> |  |  |
 
--   `target` **[HtmlElement][30]** an HtmlElement used as target for binding events
--   `name` **[string][31]** the event name (could be a string or a dot separated namespace) (optional, default `.`)
--   `callback` **any?**
+<a name="has"></a>
 
-[1]: #has
+## has
+Disallow use of Object.prototypes builtins directly
 
-[2]: #events
-
-[3]: #parameters
-
-[4]: #examples
-
-[5]: #eventtarget
-
-[6]: #parameters-1
-
-[7]: #eventtarget-1
-
-[8]: #parameters-2
-
-[9]: #on
-
-[10]: #parameters-3
-
-[11]: #examples-1
-
-[12]: #one
-
-[13]: #parameters-4
-
-[14]: #off
-
-[15]: #parameters-5
-
-[16]: #examples-2
-
-[17]: #trigger
-
-[18]: #parameters-6
-
-[19]: #defaults
-
-[20]: #defaults-1
-
-[21]: #setupeventtarget
-
-[22]: #parameters-7
-
-[23]: #on-1
-
-[24]: #parameters-8
-
-[25]: #one-1
-
-[26]: #parameters-9
-
-[27]: #off-1
-
-[28]: #parameters-10
-
-[29]: https://eslint.org/docs/rules/no-prototype-builtins
-
-[30]: https://developer.mozilla.org/docs/Web/HTML/Element
-
-[31]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
-
-[32]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
-
-[33]: #events
-
-[34]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
-
-[35]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error
+**Kind**: global constant  
+**See**: https://eslint.org/docs/rules/no-prototype-builtins  
