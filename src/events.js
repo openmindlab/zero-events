@@ -48,21 +48,16 @@ const extractHandlers = (collection, eventNames) => {
  */
 const checkFn = (method, callback) => {
   const chkFn = callback;
-
   while (method) {
     callback = chkFn;
-
     while (callback) {
       if (callback === method) {
         return true;
       }
-
       callback = callback.reference;
     }
-
     method = method.reference;
   }
-
   return false;
 };
 
@@ -243,8 +238,8 @@ Events.off(target, '.namespace');
 
       Object.defineProperty(callback, 'reference', {
         value() {
-          const arg = Array.prototype.slice.call(arguments, 0);
-          return callback.apply(target, arg.concat(args));
+          // const arg = Array.prototype.slice.call(arguments, 0);
+          return callback.apply(target, args);
         },
       });
 
@@ -267,9 +262,9 @@ Events.off(target, '.namespace');
   static one(target, name, callback, ...args) {
     Object.defineProperty(callback, 'reference', {
       value() {
-        const arg = Array.prototype.slice.call(arguments, 0);
+        // const arg = Array.prototype.slice.call(arguments, 0);
         Events.off(target, name, callback.reference);
-        return callback.apply(target, arg.concat(args));
+        return callback.apply(target, args);
       },
     });
 
