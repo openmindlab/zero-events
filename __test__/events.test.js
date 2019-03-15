@@ -55,12 +55,6 @@ describe('Static utilization', () => {
     Events.trigger(buttonListener, '..name2');
     expect(mockCallback.mock.calls.length).toBe(3);
   });
-  test('it throws an error if namespace is passed without parent parameter ', () => {
-    const mockCallback = jest.fn(() => {});
-    expect(() => {
-      Events.on(buttonListener, '.click', mockCallback);
-    }).toThrowError();
-  });
   test('class default params could be called both by "defaults" and "DefaultObject"', () => {
     const {
       defaults,

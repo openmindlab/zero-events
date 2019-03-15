@@ -1,66 +1,15 @@
+import {
+  v4 as uuid,
+} from 'uuid';
+import EventItem from './event-item';
+import '@babel/polyfill';
+
+
 /**
  * Disallow use of Object.prototypes builtins directly
  * @see https://eslint.org/docs/rules/no-prototype-builtins
  */
 const has = Object.prototype.hasOwnProperty;
-/**
- * Extract all the handlers for a specific namespace
- * Recoursive method
- * @private
- * @param {Object} collection represents binded events for target
- * @param {string} eventnames represents the event name or names spaces separated
- * @return {Array}
- */
-const extractHandlers = (collection, eventNames) => {
-  const getHandlersFromNamespace = (coll) => {
-    let ret1 = [coll.handlers];
-    Object.keys(coll.subevents).forEach((section) => {
-      if (has.call(coll.subevents, section)) {
-        ret1 = ret1.concat(getHandlersFromNamespace(coll.subevents[section]));
-      }
-    });
-    return ret1;
-  };
-
-  let ret = [];
-  const eventNamesList = eventNames.split('.');
-  const eventname = eventNamesList.shift();
-  if (eventname === '') {
-    Object.keys(collection.subevents).forEach((section) => {
-      if (has.call(collection.subevents, section)) {
-        ret = ret.concat(extractHandlers(collection.subevents[section], eventNamesList.join('.')));
-      }
-    });
-  } else {
-    const section = eventname;
-    if (has.call(collection.subevents, section)) {
-      ret = ret.concat(getHandlersFromNamespace(collection.subevents[section]));
-    }
-  }
-
-  return ret;
-};
-/**
- * @private
- * @param {function} method
- * @param {function} callback
- * @return {boolean}
- */
-const checkFn = (method, callback) => {
-  const chkFn = callback;
-  while (method) {
-    callback = chkFn;
-    while (callback) {
-      if (callback === method) {
-        return true;
-      }
-      callback = callback.reference;
-    }
-    method = method.reference;
-  }
-  return false;
-};
-
 /**
  * Create an event-bus for the application <br/>
  * It could be used as static class or initialized
@@ -75,41 +24,17 @@ eventManager.on('event', callback());
  */
 class Events {
   /**
-   * Per recuperare la versione di build corrente
-   * Proviamo ad estenarlizzare
-   * @return {string}
-   * @constructor
-   */
-  /* static get VERSION() {
-    return process.env.VERSION;
-  } */
-
-  /**
-   * Default settings for event handler
-   * @readonly
-   * @return {{handlers: Array, subevents: {}}}
-   * @constructor
-   */
-  static get defaults() {
-    return {
-      handlers: [],
-      subevents: {},
-    };
-  }
-
-  static get DefaultObject() {
-    return Events.defaults;
-  }
-
-  /**
    * Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
-   * and it adds if not present
+   * and it adds if not present it will create a Map for events
+   * @see https: //developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map
+   * IMPORTANT! To use this library and make IE compatible you MUST import DOM4 polyfill
+   * @see https: //github.com/WebReflection/dom4
    * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
    */
   static setupEventTarget(wrapper) {
     if (!has.call(wrapper, 'bindedEvents')) {
       Object.defineProperty(wrapper, 'bindedEvents', {
-        value: Events.defaults,
+        value: new Map(),
         writable: true,
         enumerable: true,
       });
@@ -206,69 +131,37 @@ Events.off(target, '.namespace');
    * @param {HtmlElement} target an HtmlElement used as target for binding events
    * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
-   * @param {*} [args]
+   * @param {object|boolean} [options = false] for a list of available options @see https: //developers.google.com/web/updates/2016/10/addeventlistener-once
    * @memberof Events
    */
-  static on(target, name, callback, ...args) {
+  static on(target, name, callback, options = false) {
     const definedTarget = this.setupEventTarget(target);
-    let {
-      bindedEvents,
-    } = definedTarget;
-    name.split(' ').forEach((event) => {
-      const eventsList = event.trim().split('.');
-      let index = 0;
-      while (index < eventsList.length - 1) {
-        const key = eventsList[index];
-        if (!key) {
-          throw new Error(`invalid event name ${event}`);
-        }
-        bindedEvents.subevents[key] = bindedEvents.subevents[key] || Events.DefaultObject;
-        bindedEvents = bindedEvents.subevents[key];
-        index += 1;
-      }
-      let eventObject = bindedEvents.subevents[eventsList[index]];
-      if (!eventObject) {
-        bindedEvents.subevents[eventsList[index]] = Events.defaults;
-        eventObject = bindedEvents.subevents[eventsList[index]];
-      }
-
-      const {
-        handlers,
-      } = eventObject;
-
-      Object.defineProperty(callback, 'reference', {
-        value() {
-          // const arg = Array.prototype.slice.call(arguments, 0);
-          return callback.apply(target, args);
-        },
-      });
-
-      handlers.push(callback);
-      target.addEventListener(eventsList[0], callback.reference, false);
-    });
+    if (!definedTarget.bindedEvents.has(name)) {
+      definedTarget.bindedEvents.set(name, []);
+    }
+    const mappedEvent = definedTarget.bindedEvents.get(name);
+    const eventItem = new EventItem(name, callback);
+    mappedEvent.push(eventItem);
+    definedTarget.addEventListener(name, callback, options);
   }
 
   /**
    * Bind only once the event and the callback to the target element
    *
+   for polyfill @see https: //github.com/WebReflection/dom4
    * @static
    * @param {HtmlElement} target an HtmlElement used as target for binding events
    * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
-   * @param {*} [args]
+   * @param {object | boolean} [options = false] for a list of available options @see https: //developers.google.com/web/updates/2016/10/addeventlistener-once
    * @returns {void}
    * @memberof Events
    */
-  static one(target, name, callback, ...args) {
-    Object.defineProperty(callback, 'reference', {
-      value() {
-        // const arg = Array.prototype.slice.call(arguments, 0);
-        Events.off(target, name, callback.reference);
-        return callback.apply(target, args);
-      },
+  static one(target, name, callback, options) {
+    const newOptions = Object.assign({}, options, {
+      once: true,
     });
-
-    Events.on(target, name, callback.reference, ...args);
+    Events.on(target, name, callback, newOptions);
   }
 
   /**
@@ -277,59 +170,45 @@ Events.off(target, '.namespace');
    * @static
    * @param {HtmlElement} target an HtmlElement used as target for binding events
    * @param {string} [name=.] the event name (could be a string or a dot separated namespace)
-   * @param {*} [callback]
+   * @param {function} [callback]
    * @memberof Events
    */
   static off(target, name = '.', callback) {
     const definedTarget = this.setupEventTarget(target);
-
-    let eventsToRemove = [];
-
-    const nameSplit = name.split('.');
-    if (nameSplit[0] === '') {
-      eventsToRemove = Object.keys(definedTarget.bindedEvents.subevents);
-    } else {
-      eventsToRemove = [nameSplit[0]];
-    }
-
-    const handlers = extractHandlers(definedTarget.bindedEvents, name);
-
-    for (let i = handlers.length - 1; i >= 0; i -= 1) {
-      const pos = handlers[i];
-      for (let j = pos.length - 1; j >= 0; j -= 1) {
-        const fn = pos[j];
-        if (callback) {
-          if (checkFn(fn, callback)) {
-            pos.splice(j, 1);
-            eventsToRemove.forEach((singleEvent) => {
-              definedTarget.removeEventListener(singleEvent, fn.reference || fn, false);
-            });
-          }
-        } else {
-          pos.splice(j, 1);
-          eventsToRemove.forEach((singleEvent) => {
-            definedTarget.removeEventListener(singleEvent, fn.reference || fn, false);
+    definedTarget.bindedEvents.forEach((value, key) => {
+      if (key.match(name)) {
+        if (typeof callback === 'undefined') {
+          value.forEach((callbacks) => {
+            definedTarget.removeEventListener(key, callbacks);
+            definedTarget.bindedEvents.delete(key);
+          });
+        } else if (typeof callback !== 'undefined' && has.call(callback, 'uuid')) {
+          value.forEach((callbacks, index) => {
+            if (callbacks.uuid === callback.uuid) {
+              definedTarget.removeEventListener(key, callback);
+              definedTarget.bindedEvents.get(key).splice(index, 1);
+            }
           });
         }
       }
-    }
+    });
   }
 
-  static trigger(target, name, ...args) {
+
+  static trigger(target, name, options) {
     const definedTarget = this.setupEventTarget(target);
 
-    const eventnames = name.split('.');
-    const handlers = extractHandlers(definedTarget.bindedEvents, name);
-
-    if (definedTarget[eventnames[0]]) {
-      return definedTarget[eventnames[0]]();
-    }
-    handlers.forEach((handler) => {
-      handler.forEach((method) => {
-        method.apply(definedTarget, args);
-      });
+    definedTarget.bindedEvents.forEach((value, key) => {
+      if (key.match(name)) {
+        const detail = Object.assign({}, {
+          detail: {},
+        }, {
+          detail: options,
+        });
+        const customEvent = new CustomEvent(key, detail);
+        definedTarget.dispatchEvent(customEvent);
+      }
     });
-    return true;
   }
 }
 

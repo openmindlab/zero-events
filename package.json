@@ -30,24 +30,14 @@
     "webpack-stream": "5.2.1"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.2.5",
     "uuid": "^3.3.2"
-  },
-  "eslintConfig": {
-    "extends": "airbnb-base",
-    "env": {
-      "browser": true
-    },
-    "plugins": [
-      "compat"
-    ],
-    "rules": {
-      "compat/compat": "error"
-    }
   },
   "scripts": {
     "dev": "webpack-dev-server --config webpack-config.js",
     "build": "webpack --config webpack-prod.js",
     "test": "jest --coverage",
-    "docs": "jsdoc2md --plugin dmd-globals-docs --files src/events.js > README.md"
+    "docs": "jsdoc2md --plugin dmd-globals-docs --files src/events.js > README.md",
+    "lint": "node_modules/.bin/eslint ./src"
   }
 }

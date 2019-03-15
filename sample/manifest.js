@@ -6,37 +6,41 @@ const btn2 = document.getElementById('btn2');
 
 let increment = 0;
 
-function mockCallback() {
-  console.log('click');
+function mockCallback(args) {
   increment += 1;
-  console.log(increment);
+  console.log(`mockCallback: ${increment}`);
 }
 
+function otherMockCallback() {
+  increment += 1;
+  console.log(`otherMockCallback: ${increment}`);
+}
 
-Events.one(btn1, 'click', mockCallback.bind(this));
-/* Events.on(btn1, 'click.pippo', mockCallback.bind(this));
-Events.on(btn1, 'click.pippo.pluto', mockCallback.bind(this));
-Events.on(btn1, 'click.paperino', mockCallback.bind(this));
+Events.on(btn1, 'click.paperino', mockCallback);
+Events.one(btn1, 'click.pluto', otherMockCallback);
+/* Events.on(btn1, 'click.pippo', mockCallback);
+Events.on(btn1, 'click.pippo.pluto', mockCallback);
+Events.on(btn1, 'click.paperino', mockCallback); */
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.off(btn1, '.paperino', mockCallback);
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
+Events.trigger(btn1, 'click');
 Events.trigger(btn1, 'click');
 
-Events.off(btn1, 'click', mockCallback); */
-
-Events.trigger(btn1, 'click');
-Events.trigger(btn1, 'click');
-Events.trigger(btn1, 'click');
-Events.trigger(btn1, 'click');
-Events.trigger(btn1, 'click');
-Events.trigger(btn1, 'click');
-Events.trigger(btn1, 'click');
-Events.trigger(btn1, 'click');
-
-Object.defineProperty(mockCallback, 'reference', {
+/* Object.defineProperty(mockCallback, 'reference', {
   value() {
     console.log('ciao');
   },
   enumerable: true,
-});
-console.log(mockCallback);
+}); */
 
 
 /* const eventsBtn1 = new Events(btn1);
