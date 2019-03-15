@@ -33,11 +33,9 @@ It could be used as static class or initialized
         * [.off(name, callback)](#Events+off) ⇒ [<code>Events</code>](#Events)
         * [.trigger(name, [...args])](#Events+trigger) ⇒ [<code>Events</code>](#Events)
     * _static_
-        * [.defaults](#Events.defaults)
-            * [new Events.defaults()](#new_Events.defaults_new)
         * [.setupEventTarget(wrapper)](#Events.setupEventTarget)
-        * [.on(target, name, callback, [...args])](#Events.on)
-        * [.one(target, name, callback, [...args])](#Events.one) ⇒ <code>void</code>
+        * [.on(target, name, callback, [options])](#Events.on)
+        * [.one(target, name, callback, [options])](#Events.one) ⇒ <code>void</code>
         * [.off(target, [name], [callback])](#Events.off)
 
 <a name="new_Events_new"></a>
@@ -52,8 +50,8 @@ Set the event handler for a given HtmlElement
 
 **Example**  
 ```js
-import Events from '@openmind/om-events';
-Events.on('event', callback());
+import Events from '@openmind/zero-events';
+Events.on(targetElement, 'event', callback());
 
 const targetElement = document.createElement('div');
 cont eventManager = new Events(targetElement);
@@ -145,23 +143,19 @@ Fire specific event
 | name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name(could be a string or a dot separated namespace) |
 | [...args] | <code>\*</code> |  |
 
-<a name="Events.defaults"></a>
-
-### Events.defaults
-**Kind**: static class of [<code>Events</code>](#Events)  
-**Read only**: true  
-<a name="new_Events.defaults_new"></a>
-
-#### new Events.defaults()
-Default settings for event handler
-
 <a name="Events.setupEventTarget"></a>
 
 ### Events.setupEventTarget(wrapper)
 Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
-and it adds if not present
+and it adds if not present it will create a Map for events
 
 **Kind**: static method of [<code>Events</code>](#Events)  
+**See**
+
+- https: //developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map
+IMPORTANT! To use this library and make IE compatible you MUST import DOM4 polyfill
+- https: //github.com/WebReflection/dom4
+
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -169,7 +163,7 @@ and it adds if not present
 
 <a name="Events.on"></a>
 
-### Events.on(target, name, callback, [...args])
+### Events.on(target, name, callback, [options])
 Static method to bind a given event
 
 **Kind**: static method of [<code>Events</code>](#Events)  
@@ -178,26 +172,28 @@ Static method to bind a given event
 - [<code>Error</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error) Error
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
-| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
-| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
-| [...args] | <code>\*</code> |  |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) |  | an HtmlElement used as target for binding events |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) |  | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |  |
+| [options] | [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [<code>boolean</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | <code>false</code> | for a list of available options @see https: //developers.google.com/web/updates/2016/10/addeventlistener-once |
 
 <a name="Events.one"></a>
 
-### Events.one(target, name, callback, [...args]) ⇒ <code>void</code>
+### Events.one(target, name, callback, [options]) ⇒ <code>void</code>
 Bind only once the event and the callback to the target element
+
+   for polyfill @see https: //github.com/WebReflection/dom4
 
 **Kind**: static method of [<code>Events</code>](#Events)  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
-| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the event name (could be a string or a dot separated namespace) |
-| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |
-| [...args] | <code>\*</code> |  |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) |  | an HtmlElement used as target for binding events |
+| name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) |  | the event name (could be a string or a dot separated namespace) |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |  |
+| [options] | [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [<code>boolean</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | <code>false</code> | for a list of available options @see https: //developers.google.com/web/updates/2016/10/addeventlistener-once |
 
 <a name="Events.off"></a>
 
@@ -208,7 +204,7 @@ Bind only once the event and the callback to the target element
 | --- | --- | --- | --- |
 | target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) |  | an HtmlElement used as target for binding events |
 | [name] | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | <code>&quot;.&quot;</code> | the event name (could be a string or a dot separated namespace) |
-| [callback] | <code>\*</code> |  |  |
+| [callback] | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |  |
 
 <a name="has"></a>
 

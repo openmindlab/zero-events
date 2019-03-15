@@ -14,8 +14,8 @@ const has = Object.prototype.hasOwnProperty;
  * Create an event-bus for the application <br/>
  * It could be used as static class or initialized
  * @example
-import Events from '@openmind/om-events';
-Events.on('event', callback());
+import Events from '@openmind/zero-events';
+Events.on(targetElement, 'event', callback());
 
 const targetElement = document.createElement('div');
 cont eventManager = new Events(targetElement);
