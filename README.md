@@ -1,9 +1,14 @@
 ## Classes
 
 <dl>
+<dt><a href="#EventItem">EventItem</a></dt>
+<dd><p>An object which represent an Event
+A <code>uuid</code> will be set in order to make the event unique</p>
+</dd>
 <dt><a href="#Events">Events</a></dt>
-<dd><p>Create an event-bus for the application <br/>
-It could be used as static class or initialized</p>
+<dd><p>Create an event-bus for the application<br/>
+It could be used as static class or initialized<br/>
+<strong>IMPORTANT!</strong> To use this library and make IE compatible you <strong>MUST</strong> import DOM4 polyfill</p>
 </dd>
 </dl>
 
@@ -15,19 +20,40 @@ It could be used as static class or initialized</p>
 </dd>
 </dl>
 
+<a name="EventItem"></a>
+
+## EventItem
+An object which represent an Event
+A `uuid` will be set in order to make the event unique
+
+**Kind**: global class  
+**See**: https://github.com/kelektiv/node-uuid  
+<a name="new_EventItem_new"></a>
+
+### new EventItem(event, [callback])
+Creates an instance of EventItem.
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| event | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) |  | the name of the event |
+| [callback] | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) | <code>()&#x3D;&gt;{}</code> | the callback to exectue |
+
 <a name="Events"></a>
 
 ## Events
-Create an event-bus for the application <br/>
-It could be used as static class or initialized
+Create an event-bus for the application<br/>
+It could be used as static class or initialized<br/>
+**IMPORTANT!** To use this library and make IE compatible you **MUST** import DOM4 polyfill
 
 **Kind**: global class  
+**See**: [https://github.com/WebReflection/dom4](https://github.com/WebReflection/dom4)  
 
 * [Events](#Events)
     * [new Events(wrapper)](#new_Events_new)
     * _instance_
-        * [.eventTarget](#Events+eventTarget)
-        * [.eventTarget](#Events+eventTarget)
+        * [.eventTarget](#Events+eventTarget) : [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element)
+        * [.eventTarget](#Events+eventTarget) : [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element)
         * [.on(name, callback, [...args])](#Events+on) ⇒ [<code>Events</code>](#Events)
         * [.one(name, callback, [...args])](#Events+one) ⇒ [<code>Events</code>](#Events)
         * [.off(name, callback)](#Events+off) ⇒ [<code>Events</code>](#Events)
@@ -35,7 +61,7 @@ It could be used as static class or initialized
     * _static_
         * [.setupEventTarget(wrapper)](#Events.setupEventTarget)
         * [.on(target, name, callback, [options])](#Events.on)
-        * [.one(target, name, callback, [options])](#Events.one) ⇒ <code>void</code>
+        * [.one(target, name, callback, [options])](#Events.one)
         * [.off(target, [name], [callback])](#Events.off)
 
 <a name="new_Events_new"></a>
@@ -59,7 +85,9 @@ eventManager.on('event', callback());
 ```
 <a name="Events+eventTarget"></a>
 
-### events.eventTarget
+### events.eventTarget : [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element)
+Set the event target for the event
+
 **Kind**: instance property of [<code>Events</code>](#Events)  
 
 | Param | Type | Description |
@@ -68,7 +96,9 @@ eventManager.on('event', callback());
 
 <a name="Events+eventTarget"></a>
 
-### events.eventTarget
+### events.eventTarget : [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element)
+Get the event target for the event
+
 **Kind**: instance property of [<code>Events</code>](#Events)  
 
 | Param | Type | Description |
@@ -150,12 +180,7 @@ Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
 and it adds if not present it will create a Map for events
 
 **Kind**: static method of [<code>Events</code>](#Events)  
-**See**
-
-- https: //developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map
-IMPORTANT! To use this library and make IE compatible you MUST import DOM4 polyfill
-- https: //github.com/WebReflection/dom4
-
+**See**: [https://developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map](https://developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -167,24 +192,21 @@ IMPORTANT! To use this library and make IE compatible you MUST import DOM4 polyf
 Static method to bind a given event
 
 **Kind**: static method of [<code>Events</code>](#Events)  
-**Throws**:
-
-- [<code>Error</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error) Error
-
+**See**: [https://developers.google.com/web/updates/2016/10/addeventlistener-once](https://developers.google.com/web/updates/2016/10/addeventlistener-once)  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) |  | an HtmlElement used as target for binding events |
 | name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) |  | the event name (could be a string or a dot separated namespace) |
 | callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |  |
-| [options] | [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [<code>boolean</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | <code>false</code> | for a list of available options @see https: //developers.google.com/web/updates/2016/10/addeventlistener-once |
+| [options] | [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [<code>boolean</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | <code>false</code> | for a list of available options |
 
 <a name="Events.one"></a>
 
-### Events.one(target, name, callback, [options]) ⇒ <code>void</code>
+### Events.one(target, name, callback, [options])
 Bind only once the event and the callback to the target element
 
-   for polyfill @see https: //github.com/WebReflection/dom4
+   for polyfill @see [https://github.com/WebReflection/dom4](https://github.com/WebReflection/dom4)
 
 **Kind**: static method of [<code>Events</code>](#Events)  
 
@@ -193,7 +215,7 @@ Bind only once the event and the callback to the target element
 | target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) |  | an HtmlElement used as target for binding events |
 | name | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) |  | the event name (could be a string or a dot separated namespace) |
 | callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) |  |  |
-| [options] | [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [<code>boolean</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | <code>false</code> | for a list of available options @see https: //developers.google.com/web/updates/2016/10/addeventlistener-once |
+| [options] | [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [<code>boolean</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | <code>false</code> | for a list of available options |
 
 <a name="Events.off"></a>
 
@@ -212,4 +234,4 @@ Bind only once the event and the callback to the target element
 Disallow use of Object.prototypes builtins directly
 
 **Kind**: global constant  
-**See**: https://eslint.org/docs/rules/no-prototype-builtins  
+**See**: [https://eslint.org/docs/rules/no-prototype-builtins](https://eslint.org/docs/rules/no-prototype-builtins)  

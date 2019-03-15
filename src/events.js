@@ -7,12 +7,14 @@ import '@babel/polyfill';
 
 /**
  * Disallow use of Object.prototypes builtins directly
- * @see https://eslint.org/docs/rules/no-prototype-builtins
+ * @see {@link https://eslint.org/docs/rules/no-prototype-builtins}
  */
 const has = Object.prototype.hasOwnProperty;
 /**
- * Create an event-bus for the application <br/>
- * It could be used as static class or initialized
+ * Create an event-bus for the application<br/>
+ * It could be used as static class or initialized<br/>
+ * **IMPORTANT!** To use this library and make IE compatible you **MUST** import DOM4 polyfill
+ * @see {@link https://github.com/WebReflection/dom4}
  * @example
 import Events from '@openmind/zero-events';
 Events.on(targetElement, 'event', callback());
@@ -26,9 +28,7 @@ class Events {
   /**
    * Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
    * and it adds if not present it will create a Map for events
-   * @see https: //developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map
-   * IMPORTANT! To use this library and make IE compatible you MUST import DOM4 polyfill
-   * @see https: //github.com/WebReflection/dom4
+   * @see {@link https://developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map}
    * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
    */
   static setupEventTarget(wrapper) {
@@ -43,6 +43,8 @@ class Events {
   }
 
   /**
+   * Set the event target for the event
+   * @type {HtmlElement}
    * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
    */
   set eventTarget(wrapper) {
@@ -50,6 +52,8 @@ class Events {
   }
 
   /**
+   * Get the event target for the event
+   * @type {HtmlElement}
    * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
    */
   get eventTarget() {
@@ -127,11 +131,11 @@ Events.off(target, '.namespace');
   /**
    * Static method to bind a given event
    * @static
-   * @throws {Error} Error
    * @param {HtmlElement} target an HtmlElement used as target for binding events
    * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
-   * @param {object|boolean} [options = false] for a list of available options @see https: //developers.google.com/web/updates/2016/10/addeventlistener-once
+   * @param {object|boolean} [options = false] for a list of available options
+   * @see {@link https://developers.google.com/web/updates/2016/10/addeventlistener-once}
    * @memberof Events
    */
   static on(target, name, callback, options = false) {
@@ -148,13 +152,12 @@ Events.off(target, '.namespace');
   /**
    * Bind only once the event and the callback to the target element
    *
-   for polyfill @see https: //github.com/WebReflection/dom4
+   for polyfill @see {@link https://github.com/WebReflection/dom4}
    * @static
    * @param {HtmlElement} target an HtmlElement used as target for binding events
    * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} callback
-   * @param {object | boolean} [options = false] for a list of available options @see https: //developers.google.com/web/updates/2016/10/addeventlistener-once
-   * @returns {void}
+   * @param {object | boolean} [options = false] for a list of available options
    * @memberof Events
    */
   static one(target, name, callback, options) {
@@ -197,7 +200,6 @@ Events.off(target, '.namespace');
 
   static trigger(target, name, options) {
     const definedTarget = this.setupEventTarget(target);
-
     definedTarget.bindedEvents.forEach((value, key) => {
       if (key.match(name)) {
         const detail = Object.assign({}, {
