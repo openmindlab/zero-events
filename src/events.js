@@ -158,7 +158,7 @@ Events.off(target, '.namespace');
   /**
    * Bind only once the event and the callback to the target element
    *
-   for polyfill @see {@link https://github.com/WebReflection/dom4}
+   * @see for polyfill {@link https://github.com/WebReflection/dom4}
    * @static
    * @param {HtmlElement} target an HtmlElement used as target for binding events
    * @param {string} name the event name (could be a string or a dot separated namespace)
@@ -174,11 +174,10 @@ Events.off(target, '.namespace');
   }
 
   /**
-   *
-   *
+   * Removes the given listener(s)
    * @static
    * @param {HtmlElement} target an HtmlElement used as target for binding events
-   * @param {string} [name=.] the event name (could be a string or a dot separated namespace)
+   * @param {string} name the event name (could be a string or a dot separated namespace)
    * @param {function} [callback]
    * @memberof Events
    */
@@ -203,7 +202,15 @@ Events.off(target, '.namespace');
     });
   }
 
-
+  /**
+   * Trigger specific event
+   *
+   * @static
+   * @param {HtmlElement} target
+   * @param {string} name
+   * @param {object} options
+   * @memberof Events
+   */
   static trigger(target, name, options) {
     const definedTarget = this.setupEventTarget(target);
     definedTarget.bindedEvents.forEach((value, key) => {
