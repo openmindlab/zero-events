@@ -9,16 +9,16 @@ const has = Object.prototype.hasOwnProperty;
  * A `uuid` will be set in order to make the event unique
  * @see https://github.com/kelektiv/node-uuid
  * @param {string} event the name of the event
- * @param {function} [callback = ()=>{}] the callback to exectue
+ * @param {function} callback the callback to exectue
  */
 class EventItem {
   /**
-     *Creates an instance of EventItem.
-     * @param {string} event
-     * @param {Function} [callback=() => {}]
-     * @memberof EventItem
-     */
-  constructor(event, callback = () => {}) {
+   *Creates an instance of EventItem.
+   * @param {string} event
+   * @param {Function} callback
+   * @memberof EventItem
+   */
+  constructor(event, callback) {
     if (!has.call(callback, 'uuid')) {
       const callbackUuid = uuid();
       Object.defineProperty(callback, 'uuid', {

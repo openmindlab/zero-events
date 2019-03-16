@@ -1,6 +1,3 @@
-import {
-  v4 as uuid,
-} from 'uuid';
 import EventItem from './event-item';
 import '@babel/polyfill';
 
@@ -26,35 +23,44 @@ eventManager.on('event', callback());
  */
 class Events {
   /**
-   * Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
+   * Check if given HtmlElement as target has the 'bindedEvents' property<br/>
    * and it adds if not present it will create a Map for events
    * @see {@link https://developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map}
-   * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
+   * @param {HtmlElement} target an HtmlElement used as target for binding events
+   * @throws {Error} Will throw an error if element is not an HtmlElement or jQuery instance
    */
-  static setupEventTarget(wrapper) {
-    if (!has.call(wrapper, 'bindedEvents')) {
-      Object.defineProperty(wrapper, 'bindedEvents', {
+  static setupEventTarget(target) {
+    let element = target;
+    if (typeof target.jquery !== 'undefined') {
+      element = target[0];
+    }
+    if (element.nodeType !== 1) {
+      throw new Error('The target element must be an HtmlElement instance');
+    }
+
+    if (!has.call(element, 'bindedEvents')) {
+      Object.defineProperty(element, 'bindedEvents', {
         value: new Map(),
         writable: true,
         enumerable: true,
       });
     }
-    return wrapper;
+    return element;
   }
 
   /**
    * Set the event target for the event
    * @type {HtmlElement}
-   * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
+   * @param {HtmlElement} target an HtmlElement used as target for binding events
    */
-  set eventTarget(wrapper) {
-    this.eventTargetElement = Events.setupEventTarget(wrapper);
+  set eventTarget(target) {
+    this.eventTargetElement = Events.setupEventTarget(target);
   }
 
   /**
    * Get the event target for the event
    * @type {HtmlElement}
-   * @param {HtmlElement} wrapper an HtmlElement used as target for binding events
+   * @param {HtmlElement} target an HtmlElement used as target for binding events
    */
   get eventTarget() {
     return this.eventTargetElement;
@@ -62,10 +68,10 @@ class Events {
 
   /**
    * Set the event handler for a given HtmlElement
-   * @param {HTMLElement} wrapper an HtmlElement used as target for binding events
+   * @param {HTMLElement} target an HtmlElement used as target for binding events
    */
-  constructor(wrapper) {
-    this.eventTarget = wrapper;
+  constructor(target) {
+    this.eventTarget = target;
   }
 
   /**
@@ -176,7 +182,7 @@ Events.off(target, '.namespace');
    * @param {function} [callback]
    * @memberof Events
    */
-  static off(target, name = '.', callback) {
+  static off(target, name, callback) {
     const definedTarget = this.setupEventTarget(target);
     definedTarget.bindedEvents.forEach((value, key) => {
       if (key.match(name)) {
@@ -185,7 +191,7 @@ Events.off(target, '.namespace');
             definedTarget.removeEventListener(key, callbacks);
             definedTarget.bindedEvents.delete(key);
           });
-        } else if (typeof callback !== 'undefined' && has.call(callback, 'uuid')) {
+        } else {
           value.forEach((callbacks, index) => {
             if (callbacks.uuid === callback.uuid) {
               definedTarget.removeEventListener(key, callback);

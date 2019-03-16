@@ -1,6 +1,26 @@
+import $ from 'jquery';
 import Events from '../src/events';
 
 const buttonListener = document.createElement('button');
+document.body.appendChild(buttonListener);
+
+describe('Manage target element', () => {
+  test('it throws an error if no htmlelement has passed as target', () => {
+    expect(() => {
+      Events.setupEventTarget({});
+    }).toThrow();
+  });
+  test('it return the target element with \'bindedEvents\' object attached even with jQuery selector', () => {
+    const selectedButton = $('button');
+    const elementTarget = Events.setupEventTarget(selectedButton);
+    expect(typeof elementTarget.bindedEvents).toBe('object');
+  });
+
+  test('it return the target element with \'bindedEvents\' object attached', () => {
+    const elementTarget = Events.setupEventTarget(buttonListener);
+    expect(typeof elementTarget.bindedEvents).toBe('object');
+  });
+});
 
 describe('Static utilization', () => {
   test('execute a callback when event is bound', () => {
@@ -55,25 +75,16 @@ describe('Static utilization', () => {
     Events.trigger(buttonListener, '..name2');
     expect(mockCallback.mock.calls.length).toBe(3);
   });
-  test('class default params could be called both by "defaults" and "DefaultObject"', () => {
-    const {
-      defaults,
-    } = Events;
-    const {
-      DefaultObject,
-    } = Events;
-    expect(defaults).toEqual(DefaultObject);
-  });
   test('it can removed also a named function', () => {
     const mockCallback = jest.fn(() => {});
-    Events.on(buttonListener, 'click.name1.name2', mockCallback);
+    Events.on(buttonListener, 'click', mockCallback);
     Events.trigger(buttonListener, 'click');
-    Events.trigger(buttonListener, '.name1');
-    Events.trigger(buttonListener, '..name2');
-    Events.off(buttonListener, '..name2', mockCallback);
     Events.trigger(buttonListener, 'click');
-    Events.trigger(buttonListener, '.name1');
-    Events.trigger(buttonListener, '..name2');
+    Events.trigger(buttonListener, 'click');
+    Events.off(buttonListener, 'click', mockCallback);
+    Events.trigger(buttonListener, 'click');
+    Events.trigger(buttonListener, 'click');
+    Events.trigger(buttonListener, 'click');
     expect(mockCallback.mock.calls.length).toBe(3);
   });
 });
@@ -94,6 +105,19 @@ describe('Dynamic utilization', () => {
     events.trigger('click');
     events.trigger('click');
     expect(mockCallback.mock.calls.length).toBe(1);
+  });
+  test('The same callback has been assigned', () => {
+    const mockCallback = jest.fn(() => {});
+    const events = new Events(buttonListener);
+    events.on('click', mockCallback);
+    events.trigger('click');
+    events.off('click', mockCallback);
+    events.on('mouseenter', mockCallback);
+    events.trigger('click');
+    events.trigger('click');
+    events.trigger('mouseenter');
+    events.trigger('mouseenter');
+    expect(mockCallback.mock.calls.length).toBe(3);
   });
   test('execute once the callback method is bound by "one" ', () => {
     const mockCallback = jest.fn(() => {});
