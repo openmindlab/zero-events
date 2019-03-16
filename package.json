@@ -32,13 +32,21 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
+    "jest-coverage-badges": "^1.1.2",
     "uuid": "^3.3.2"
   },
   "scripts": {
     "dev": "webpack-dev-server --config webpack-config.js",
     "build": "webpack --config webpack-prod.js",
-    "test": "jest --coverage",
-    "docs": "jsdoc2md --plugin dmd-globals-docs --files src/**/*.js > README.md",
+    "test": "jest",
+    "test:coverage": "npm test -- --coverage",
+    "test:badges": "npm run test:coverage  && jest-coverage-badges",
+    "docs": "jsdoc2md --plugin dmd-globals-docs --template README.hbs --files src/**/*.js > README.md",
     "lint": "node_modules/.bin/eslint ./src"
+  },
+  "jest": {
+    "coverageReporters": [
+      "json-summary"
+    ]
   }
 }

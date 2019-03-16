@@ -1,3 +1,9 @@
+
+![Coverage lines](coverage/badge-lines.svg)
+![Coverage functions](coverage/badge-functions.svg)
+![Coverage branches](coverage/badge-branches.svg)
+![Coverage statements](coverage/badge-statements.svg)
+
 ## Classes
 
 <dl>
@@ -30,14 +36,14 @@ A `uuid` will be set in order to make the event unique
 **See**: https://github.com/kelektiv/node-uuid  
 <a name="new_EventItem_new"></a>
 
-### new EventItem(event, [callback])
+### new EventItem(event, callback)
 Creates an instance of EventItem.
 
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| event | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) |  | the name of the event |
-| [callback] | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) | <code>()&#x3D;&gt;{}</code> | the callback to exectue |
+| Param | Type | Description |
+| --- | --- | --- |
+| event | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | the name of the event |
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) | the callback to exectue |
 
 <a name="Events"></a>
 
@@ -50,7 +56,7 @@ It could be used as static class or initialized<br/>
 **See**: [https://github.com/WebReflection/dom4](https://github.com/WebReflection/dom4)  
 
 * [Events](#Events)
-    * [new Events(wrapper)](#new_Events_new)
+    * [new Events(target)](#new_Events_new)
     * _instance_
         * [.eventTarget](#Events+eventTarget) : [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element)
         * [.eventTarget](#Events+eventTarget) : [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element)
@@ -59,20 +65,20 @@ It could be used as static class or initialized<br/>
         * [.off(name, callback)](#Events+off) ⇒ [<code>Events</code>](#Events)
         * [.trigger(name, [...args])](#Events+trigger) ⇒ [<code>Events</code>](#Events)
     * _static_
-        * [.setupEventTarget(wrapper)](#Events.setupEventTarget)
+        * [.setupEventTarget(target)](#Events.setupEventTarget)
         * [.on(target, name, callback, [options])](#Events.on)
         * [.one(target, name, callback, [options])](#Events.one)
         * [.off(target, [name], [callback])](#Events.off)
 
 <a name="new_Events_new"></a>
 
-### new Events(wrapper)
+### new Events(target)
 Set the event handler for a given HtmlElement
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| wrapper | [<code>HTMLElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
+| target | [<code>HTMLElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
 
 **Example**  
 ```js
@@ -92,7 +98,7 @@ Set the event target for the event
 
 | Param | Type | Description |
 | --- | --- | --- |
-| wrapper | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
+| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
 
 <a name="Events+eventTarget"></a>
 
@@ -103,7 +109,7 @@ Get the event target for the event
 
 | Param | Type | Description |
 | --- | --- | --- |
-| wrapper | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
+| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
 
 <a name="Events+on"></a>
 
@@ -175,16 +181,20 @@ Fire specific event
 
 <a name="Events.setupEventTarget"></a>
 
-### Events.setupEventTarget(wrapper)
-Check if given HtmlElement as wrapper has the 'bindedEvents' property<br/>
+### Events.setupEventTarget(target)
+Check if given HtmlElement as target has the 'bindedEvents' property<br/>
 and it adds if not present it will create a Map for events
 
 **Kind**: static method of [<code>Events</code>](#Events)  
+**Throws**:
+
+- [<code>Error</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error) Will throw an error if element is not an HtmlElement or jQuery instance
+
 **See**: [https://developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map](https://developer.mozilla.org/it/docs/Web/JavaScript/Reference/Global_Objects/Map)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| wrapper | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
+| target | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | an HtmlElement used as target for binding events |
 
 <a name="Events.on"></a>
 
@@ -235,3 +245,8 @@ Disallow use of Object.prototypes builtins directly
 
 **Kind**: global constant  
 **See**: [https://eslint.org/docs/rules/no-prototype-builtins](https://eslint.org/docs/rules/no-prototype-builtins)  
+
+* * *
+
+&copy; 2019 - openmind
+LAB [https://www.openmindonline.it](https://www.openmindonline.it)
