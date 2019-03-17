@@ -1,69 +1,19 @@
-const WbMerge = require("webpack-merge");
+const webpackMerge = require('webpack-merge');
+const path = require('path');
+const webpackCommon = require('./webpack-common');
 
-
-function freeze_version() {
-
-  let level = "patch";
-
-  const FS = require("fs");
-  const SemVer = require("semver");
-  const Package = require("./package.json");
-
-  let version = Package.version;
-
-  let new_version = SemVer.inc(version, level);
-
-  console.info("Freezing version from", version, "to", new_version);
-
-  Package.version = new_version;
-
-  FS.writeFileSync( "./package.json", JSON.stringify(Package, null, 2), "utf-8" );
-
-}
-
-function generate_new_version() {
-
-  let level = "patch";
-
-  const FS = require("fs");
-  const SemVer = require("semver");
-  const Package = require("./package.json");
-
-  let version = Package.version;
-  version = SemVer.inc(version, `pre${level}`);
-
-  console.info("Genereate new version", version);
-
-  Package.version = version;
-
-  FS.writeFileSync( "./package.json", JSON.stringify(Package, null, 2), "utf-8" );
-
-}
-
-freeze_version();
-
-const WbConfig = require("./webpack-config");
-delete WbConfig.devtool;
-delete WbConfig.entry;
-
-// generate_new_version();
-
-module.exports = WbMerge(WbConfig, {
-
+module.exports = webpackMerge(webpackCommon, {
   mode: 'production',
-
   entry: {
-    zero: './src/events.js'
+    zero: './src/events.js',
   },
-
   watch: false,
-
   output: {
-    filename: "zero-events.js",
+    filename: 'zero-events.js',
+    path: path.resolve(__dirname, 'build'),
     libraryTarget: 'umd',
     library: 'ZeroEvents',
     umdNamedDefine: true,
-    globalObject: 'this'
-  }
-})
-
+    globalObject: 'this',
+  },
+});

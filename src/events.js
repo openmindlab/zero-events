@@ -1,5 +1,4 @@
 import EventItem from './event-item';
-import '@babel/polyfill';
 
 
 /**

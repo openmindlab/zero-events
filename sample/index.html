@@ -1,10 +1,17 @@
 <html>
-  <head>
 
-  </head>
-  <body>
-    <button id="btn1">click me test 1</button>
-    <button id="btn2">click me test 2</button>
-    <script src="./manifest.dev.js"></script>
-  </body>
+<head>
+  <script type="text/javascript">
+    if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent))
+      document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/dom4/1.8.3/dom4.js"><\ / script > ');
+  </script>
+</head>
+
+<body>
+
+  <button id="btn1">click me test 1</button>
+  <button id="btn2">click me test 2</button>
+  <script src="./manifest.dev.js"></script>
+</body>
+
 </html>
