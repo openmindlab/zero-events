@@ -6,6 +6,9 @@
     "type": "git",
     "url": "https://github.com/openmindlab/zero-events"
   },
+  "engines": {
+    "node": ">=10.15.0"
+  },
   "main": "build/zero-events.js",
   "author": "openmind Lab",
   "license": "MIT",
