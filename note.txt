@@ -1,0 +1,13 @@
+verificare sempre con caniuse
+documentare sempre fino a che versione è compatibile ed eventualmente i polyfill
+testare sempre
+segnare eventuale polyfill nelle peerdependecies
+
+
+
+Aggiornati 
+
+"babel-core": "6.26.3",
+"babel-loader": "7.1.5",
+"babel-preset-env": "1.7.0",
+"babel-register": "6.26.0",
